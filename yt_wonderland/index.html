@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+
+  <head>
+    <meta charset="UTF-8">
+    <title>WHR D3 test</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+  </head>
+
+  <body>
+    X: 
+    <select id="x-dim">
+      <option value="Happiness_Score" selected="selected">Happiness</option>
+      <option value="Family">Family</option>
+      <option value="Economy_GDP_Per_Capita">GDP/Capita</option>
+      <option value="Freedom">Freedom</option>
+      <option value="Generosity">Generosity</option>
+      <option value="Health_Life_Expectancy">Life Expectancy</option>
+      <option value="Trust_Government_Corruption">Gov. Corruption</option>
+    </select>
+
+    Y: 
+    <select id="y-dim">
+      <option value="Happiness_Score">Happiness</option>
+      <option value="Family">Family</option>
+      <option value="Economy_GDP_Per_Capita">GDP/Capita</option>
+      <option value="Freedom" selected="selected">Freedom</option>
+      <option value="Generosity">Generosity</option>
+      <option value="Health_Life_Expectancy">Life Expectancy</option>
+      <option value="Trust_Government_Corruption">Gov. Corruption</option>
+    </select>
+
+    <div id="plot">
+
+    </div>
+
+    <script type="application/javascript" src="js/site.js"></script>
+    
+  </body>
+</html>
