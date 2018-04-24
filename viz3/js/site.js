@@ -62,6 +62,14 @@ function handleMouseOut(d, i) {
     d3.select("#label-" + d.Happiness_Rank).remove();
 }
 
+function handlePrimaryCountryChange() {
+  console.log("primary country change called");
+  var primarySelectElem = document.getElementById("primary-country-select");
+  var primaryCountry = primarySelectElem.options[primarySelectElem.selectedIndex].value;
+  console.log("primary country is: " + primaryCountry);
+  updatePlot(primaryCountry);
+}
+
 function initPlot(country) {
 
     console.log(countryInfoMap.get(country));
@@ -191,4 +199,9 @@ d3.csv("data/world-happiness-report/2017_with_ranking.csv").then(function(happin
                .range([TOP_PADDING + NUMERAL_LABEL_GUTTER, CANVAS_HEIGHT- BOTTOM_PADDING]);
     initPlot(INIT_COUNTRY);
 });
+
+d3.select('#primary-country-select')
+    .on("change", function () {
+    handlePrimaryCountryChange();
+    });
 
