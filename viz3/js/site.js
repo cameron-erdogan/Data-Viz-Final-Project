@@ -10,11 +10,22 @@ const RIGHT_PADDING         =    30;
 const TOP_PADDING           =   100;
 const BOTTOM_PADDING        =    15;
 
-const RADIUS                =    10;
+const CIRCLE_RADIUS         =    10;
+const SQ_SIDE_LENGTH        =    20;
+const SQ_CORNER_RADIUS      =     2;
 
 const COUNTRIES_COUNT       =   155;
 
-const INIT_COUNTRY = "China";
+const VIZ3_INIT_COUNTRY     = "China";
+
+const VIZ4_INIT_COUNTRY1    = "China";
+const VIZ4_INIT_COUNTRY2    = "Australia";
+
+const CIRCLE_OPACITY        = 0.8;
+const VIZ3_ACCENT_COLOR     = "blue";
+const VIZ4_C1_ACCENT_COLOR  = "green";
+const VIZ4_C2_ACCENT_COLOR  = "red";
+
 const DIMENSIONS = [
                         {'column_name':  "Happiness_Rank",
                          'display_name': "Happiness"},
@@ -41,39 +52,23 @@ const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 
 var countryInfo,
     countryInfoMap,
-    svg,
+    viz3_svg,
+    viz4_svg,
     xScale,
     yScale;
 
 
-var ranking_data = [1, 1, 1, 1, 1, 1, 1]
-var axis_coords = [0, 0, 0, 0, 0, 0, 0]
+var viz3_ranking_data = [1, 1, 1, 1, 1, 1, 1];
+var viz4_country1_ranking_data = [1, 1, 1, 1, 1, 1, 1];
+var viz4_country2_ranking_data = [1, 1, 1, 1, 1, 1, 1];
+var axis_coords = [0, 0, 0, 0, 0, 0, 0];
 
-function handleMouseOver(d, i) {
-    svg.append("text")
-       .attr('id', "label-" + d.Happiness_Rank)
-       .attr('x', () => xScale(d) )
-       .attr('y', () => (axis_coords[i]-RADIUS-5) )
-       .attr("text-anchor", "middle")
-       .text(() => d);
-}
 
-function handleMouseOut(d, i) {
-    d3.select("#label-" + d.Happiness_Rank).remove();
-}
+/*****************************************************************************
+ *  Viz3 functions
+ */
 
-function handlePrimaryCountryChange() {
-  console.log("primary country change called");
-  var primarySelectElem = document.getElementById("primary-country-select");
-  var primaryCountry = primarySelectElem.options[primarySelectElem.selectedIndex].value;
-  console.log("primary country is: " + primaryCountry);
-  updatePlot(primaryCountry);
-}
-
-function initPlot(country) {
-
-    console.log(countryInfoMap.get(country));
-
+function initViz3Plot(country) {
 
     // Render ranking gridlines
     var line_top = TOP_PADDING + NUMERAL_LABEL_GUTTER;
@@ -84,10 +79,10 @@ function initPlot(country) {
         var gridlineCoords = [[xCoord, line_top], [xCoord, line_bottom]];
         var lineGenerator = d3.line();
         var pathString = lineGenerator(gridlineCoords);
-        svg.append("path")
+        viz3_svg.append("path")
            .attr("class", "gridline")
            .attr('d', pathString);
-        svg.append("text")
+        viz3_svg.append("text")
            .attr("class", "ranking-gridline-label")
            .attr("text-anchor", "middle")
            .attr("x", xCoord)
@@ -96,7 +91,7 @@ function initPlot(country) {
     }
 
     // Render dimension labels
-    svg.append("text")
+    viz3_svg.append("text")
        .attr("class", "dimension-label")
        .attr("text-anchor", "end")
        .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
@@ -106,8 +101,8 @@ function initPlot(country) {
     for (d = 0; d < DIMENSIONS.length; d++) {
         var yCoord = (yScale(d) + yScale(d+1))/2;
         axis_coords[d] = yCoord;
-        ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
-        svg.append("text")
+        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
+        viz3_svg.append("text")
            .attr("class", "dimension-label")
            .attr("text-anchor", "end")
            .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
@@ -115,39 +110,260 @@ function initPlot(country) {
            .text(DIMENSIONS[d].display_name);
     }
 
-    console.log(ranking_data);
+    // Render happiness square
+    var sqaure = viz3_svg.selectAll("rect")
+                         .data(viz3_ranking_data.slice(0,1))
+                         .enter()
+                         .append("rect")
+                         .attr("class", "happiness-ranking-sq")
+                         .attr("x", (d,i) => (xScale(viz3_ranking_data[0]) - SQ_SIDE_LENGTH/2))
+                         .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
+                         .attr("height", SQ_SIDE_LENGTH)
+                         .attr("width", SQ_SIDE_LENGTH)
+                         .attr("rx", SQ_CORNER_RADIUS)
+                         .attr("ry", SQ_CORNER_RADIUS)
+                         .attr("fill", VIZ3_ACCENT_COLOR)
+                         .attr("opacity", CIRCLE_OPACITY)
+                         .on("mouseover", handleViz3SquareMouseOver)
+                         .on("mouseout", handleViz3MouseOut);
 
     // Render circles
-    var circ = svg.selectAll("circle")
-                  .data(ranking_data)
+    var circ = viz3_svg.selectAll("circle")
+                  .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
                   .enter()
                   .append("circle")
-                  .attr("cx", function(d, i) { return xScale(ranking_data[i]); })
-                  .attr("cy", function(d, i) { return axis_coords[i]; })
-                  .attr("r", function(d) { return RADIUS; })
-                  .attr("fill", "blue")
-                  .attr("opacity", 0.5)
-                  .on("mouseover", handleMouseOver)
-                  .on("mouseout", handleMouseOut);
+                  .attr("class", "dimension-ranking-circle")
+                  .attr("cx", function(d, i) { return xScale(viz3_ranking_data[i+1]); })
+                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
+                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("fill", VIZ3_ACCENT_COLOR)
+                  .attr("opacity", CIRCLE_OPACITY)
+                  .on("mouseover", handleViz3CircleMouseOver)
+                  .on("mouseout", handleViz3MouseOut);
 }
 
-function updatePlot(country) {
+function updateViz3Plot(country) {
     for (d = 0; d < DIMENSIONS.length; d++) {
-        ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
+        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
     }
 
-    var circ = svg.selectAll("circle")
-                  .data(ranking_data)
+    var sq = viz3_svg.selectAll(".happiness-ranking-sq")
+                  .data(viz3_ranking_data.slice(0,1))
                   .transition()
                   .duration(1000)
-                  .attr("cx", function(d, i) { return xScale(ranking_data[i]); });
+                  .attr("x", (d,i) => (xScale(viz3_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+
+    var circ = viz3_svg.selectAll(".dimension-ranking-circle")
+                  .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+                  .transition()
+                  .duration(1000)
+                  .attr("cx", function(d, i) { return xScale(viz3_ranking_data[i+1]); });
 
 }
 
-svg = d3.select("#plot")
-        .append("svg")
-        .attr("height", CANVAS_HEIGHT)
-        .attr("width", CANVAS_WIDTH);
+function handleViz3CircleMouseOver(d, i) {
+    viz3_svg.append("text")
+             .attr('id', "label-" + d.Happiness_Rank)
+             .attr('x', () => xScale(d) )
+             .attr('y', () => (axis_coords[i+1]-CIRCLE_RADIUS-5) )
+             .attr("text-anchor", "middle")
+             .text(() => d);
+}
+
+function handleViz3SquareMouseOver(d, i) {
+    viz3_svg.append("text")
+             .attr('id', "label-" + d.Happiness_Rank)
+             .attr('x', () => xScale(d) )
+             .attr('y', () => (axis_coords[i]-CIRCLE_RADIUS-5) )
+             .attr("text-anchor", "middle")
+             .text(() => d);
+}
+
+function handleViz3MouseOut(d, i) {
+    d3.select("#label-" + d.Happiness_Rank).remove();
+}
+
+function handleViz3CountryChange() {
+  var viz3SelectElem = document.getElementById("viz3-country-select");
+  var viz3Country = viz3SelectElem.options[viz3SelectElem.selectedIndex].value;
+  updateViz3Plot(viz3Country);
+}
+
+
+/*****************************************************************************
+ *  Viz4 functions
+ */
+
+function initViz4Plot(c1, c2) {
+
+    // Render ranking gridlines
+    var line_top = TOP_PADDING + NUMERAL_LABEL_GUTTER;
+    var line_bottom = CANVAS_HEIGHT - BOTTOM_PADDING;
+
+    for (l = 0; l < RANKING_GRIDLINES.length; l++) {
+        var xCoord = xScale(RANKING_GRIDLINES[l]);
+        var gridlineCoords = [[xCoord, line_top], [xCoord, line_bottom]];
+        var lineGenerator = d3.line();
+        var pathString = lineGenerator(gridlineCoords);
+        viz4_svg.append("path")
+           .attr("class", "gridline")
+           .attr('d', pathString);
+        viz4_svg.append("text")
+           .attr("class", "ranking-gridline-label")
+           .attr("text-anchor", "middle")
+           .attr("x", xCoord)
+           .attr("y", TOP_PADDING - 25)
+           .text(RANKING_GRIDLINES[l]);
+    }
+
+    // Render dimension labels
+    viz4_svg.append("text")
+       .attr("class", "dimension-label")
+       .attr("text-anchor", "end")
+       .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
+       .attr("y", TOP_PADDING - 25)
+       .text("Rank");
+
+    for (d = 0; d < DIMENSIONS.length; d++) {
+        var yCoord = (yScale(d) + yScale(d+1))/2;
+        axis_coords[d] = yCoord;
+        viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS[d].column_name];
+        viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS[d].column_name];
+
+        viz4_svg.append("text")
+           .attr("class", "dimension-label")
+           .attr("text-anchor", "end")
+           .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
+           .attr("y", yCoord - DIMENSION_LABEL_Y_OFFSET)
+           .text(DIMENSIONS[d].display_name);
+    }
+
+    // Render square for country 1
+    var sqaure = viz4_svg.selectAll(".country1-sq")
+                         .data(viz4_country1_ranking_data.slice(0,1))
+                         .enter()
+                         .append("rect")
+                         .attr("class", "country1-sq")
+                         .attr("x", (d,i) => (xScale(viz4_country1_ranking_data[0]) - SQ_SIDE_LENGTH/2))
+                         .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
+                         .attr("height", SQ_SIDE_LENGTH)
+                         .attr("width", SQ_SIDE_LENGTH)
+                         .attr("rx", SQ_CORNER_RADIUS)
+                         .attr("ry", SQ_CORNER_RADIUS)
+                         .attr("fill", VIZ4_C1_ACCENT_COLOR)
+                         .attr("opacity", CIRCLE_OPACITY)
+                         // .on("mouseover", handleViz3SquareMouseOver)
+                         // .on("mouseout", handleViz3MouseOut);
+
+    // Render circles for country 1
+    var circ = viz4_svg.selectAll(".country1-circle")
+                  .data(viz4_country1_ranking_data.slice(1,DIMENSIONS.length))
+                  .enter()
+                  .append("circle")
+                  .attr("class", "country1-circle")
+                  .attr("cx", function(d, i) { return xScale(viz4_country1_ranking_data[i+1]); })
+                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
+                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("fill", VIZ4_C1_ACCENT_COLOR)
+                  .attr("opacity", CIRCLE_OPACITY)
+                  // .on("mouseover", handleViz3MouseOver)
+                  // .on("mouseout", handleViz3MouseOut);
+
+    // Render square for country 2
+    var sqaure = viz4_svg.selectAll(".country2-sq")
+                     .data(viz4_country2_ranking_data.slice(0,1))
+                     .enter()
+                     .append("rect")
+                     .attr("class", "country2-sq")
+                     .attr("x", (d,i) => (xScale(viz4_country2_ranking_data[0]) - SQ_SIDE_LENGTH/2))
+                     .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
+                     .attr("height", SQ_SIDE_LENGTH)
+                     .attr("width", SQ_SIDE_LENGTH)
+                     .attr("rx", SQ_CORNER_RADIUS)
+                     .attr("ry", SQ_CORNER_RADIUS)
+                     .attr("fill", VIZ4_C2_ACCENT_COLOR)
+                     .attr("opacity", CIRCLE_OPACITY)
+                     // .on("mouseover", handleViz3SquareMouseOver)
+                     // .on("mouseout", handleViz3MouseOut);
+
+    // Render circles for country 2
+    var circ = viz4_svg.selectAll(".country2-circle")
+                  .data(viz4_country2_ranking_data.slice(1, DIMENSIONS.length))
+                  .enter()
+                  .append("circle")
+                  .attr("class", "country2-circle")
+                  .attr("cx", function(d, i) { return xScale(viz4_country2_ranking_data[i+1]); })
+                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
+                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("fill", VIZ4_C2_ACCENT_COLOR)
+                  .attr("opacity", CIRCLE_OPACITY)
+                  // .on("mouseover", handleViz3MouseOver)
+                  // .on("mouseout", handleViz3MouseOut);
+}
+
+function updateViz4Plot(c1, c2) {
+    if (c1) {
+        for (d = 0; d < DIMENSIONS.length; d++) {
+            viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS[d].column_name];
+        }
+
+        var sq = viz4_svg.selectAll(".country1-sq")
+                  .data(viz4_country1_ranking_data.slice(0,1))
+                  .transition()
+                  .duration(1000)
+                  .attr("x", (d,i) => (xScale(viz4_country1_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+
+        var circ = viz4_svg.selectAll(".country1-circle")
+                  .data(viz4_country1_ranking_data.slice(1,DIMENSIONS.length))
+                  .transition()
+                  .duration(1000)
+                  .attr("cx", function(d, i) { return xScale(viz4_country1_ranking_data[i+1]); });
+    }
+
+    if (c2) {
+        for (d = 0; d < DIMENSIONS.length; d++) {
+            viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS[d].column_name];
+        }
+
+        var sq = viz4_svg.selectAll(".country2-sq")
+                  .data(viz4_country2_ranking_data.slice(0,1))
+                  .transition()
+                  .duration(1000)
+                  .attr("x", (d,i) => (xScale(viz4_country2_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+
+        var circ = viz4_svg.selectAll(".country2-circle")
+                  .data(viz4_country2_ranking_data.slice(1,DIMENSIONS.length))
+                  .transition()
+                  .duration(1000)
+                  .attr("cx", function(d, i) { return xScale(viz4_country2_ranking_data[i+1]); });
+    }
+}
+
+function handleViz4Country1Change() {
+    var viz4C1SelectElem = document.getElementById("viz4-country1-select");
+    var viz4Country1 = viz4C1SelectElem.options[viz4C1SelectElem.selectedIndex].value;
+    updateViz4Plot(viz4Country1, null);
+}
+
+function handleViz4Country2Change() {
+    var viz4C2SelectElem = document.getElementById("viz4-country2-select");
+    var viz4Country2 = viz4C2SelectElem.options[viz4C2SelectElem.selectedIndex].value;
+    updateViz4Plot(null, viz4Country2);
+}
+
+/*****************************************************************************
+ *  Set up
+ */
+
+viz3_svg = d3.select("#viz3-plot")
+              .append("svg")
+              .attr("height", CANVAS_HEIGHT)
+              .attr("width", CANVAS_WIDTH);
+
+viz4_svg = d3.select("#viz4-plot")
+              .append("svg")
+              .attr("height", CANVAS_HEIGHT)
+              .attr("width", CANVAS_WIDTH);
 
 d3.csv("data/world-happiness-report/2017_with_ranking.csv").then(function(happinessData) {
 
@@ -197,11 +413,25 @@ d3.csv("data/world-happiness-report/2017_with_ranking.csv").then(function(happin
     yScale = d3.scaleLinear()
                .domain([0, DIMENSIONS.length])
                .range([TOP_PADDING + NUMERAL_LABEL_GUTTER, CANVAS_HEIGHT- BOTTOM_PADDING]);
-    initPlot(INIT_COUNTRY);
+    
+    initViz3Plot(VIZ3_INIT_COUNTRY);
+    initViz4Plot(VIZ4_INIT_COUNTRY1, VIZ4_INIT_COUNTRY2);
 });
 
-d3.select('#primary-country-select')
+// viz3 interaction event handlers
+d3.select('#viz3-country-select')
     .on("change", function () {
-    handlePrimaryCountryChange();
+    handleViz3CountryChange();
+    });
+
+// viz4 interaction event handlers
+d3.select('#viz4-country1-select')
+    .on("change", function () {
+    handleViz4Country1Change();
+    });
+
+d3.select('#viz4-country2-select')
+    .on("change", function () {
+    handleViz4Country2Change();
     });
 
