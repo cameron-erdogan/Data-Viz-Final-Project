@@ -1,3 +1,4 @@
+// LAYOUT SETTINGS
 const CANVAS_HEIGHT         =   500;
 const CANVAS_WIDTH          =  1200;
 
@@ -10,21 +11,30 @@ const RIGHT_PADDING         =    30;
 const TOP_PADDING           =   100;
 const BOTTOM_PADDING        =    15;
 
+// MARKER SETTINGS
 const CIRCLE_RADIUS         =    10;
 const SQ_SIDE_LENGTH        =    20;
 const SQ_CORNER_RADIUS      =     2;
-
-const COUNTRIES_COUNT       =   155;
-
-const VIZ3_INIT_COUNTRY     = "China";
-
-const VIZ4_INIT_COUNTRY1    = "China";
-const VIZ4_INIT_COUNTRY2    = "Australia";
-
-const CIRCLE_OPACITY        = 0.8;
+const CIRCLE_OPACITY        =     1;  // [0.0 - 1.0]
 const VIZ3_ACCENT_COLOR     = "blue";
 const VIZ4_C1_ACCENT_COLOR  = "green";
 const VIZ4_C2_ACCENT_COLOR  = "red";
+
+// DATA SETTINGS
+const COUNTRIES_COUNT       =   155;
+const VIZ3_INIT_COUNTRY     = "China";
+const VIZ4_INIT_COUNTRY1    = "China";
+const VIZ4_INIT_COUNTRY2    = "Australia";
+
+
+// LINE SETTINGS
+const GRAPH_LINE_WIDTH      = 1;
+const GRAPH_LINE_COLOR      = "gray";
+const DASHARRAY_STYLE       = "5,5";
+const RANKING_GRIDLINES     = [1, 30, 60, 90, 120, 150];
+
+// INTERACTION SETTINGS
+const TRANSITION_DURATION   =  1000;
 
 const DIMENSIONS = [
                         {'column_name':  "Happiness_Rank",
@@ -48,7 +58,6 @@ const DIMENSIONS = [
                         {'column_name':  "Trust_Government_Corruption_Rank",
                          'display_name': "Trust in Government"}                        
                     ];
-const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 
 var countryInfo,
     countryInfoMap,
@@ -110,13 +119,37 @@ function initViz3Plot(country) {
            .text(DIMENSIONS[d].display_name);
     }
 
+    // Render graph lines
+    var ref_line = viz3_svg.append("line")
+                             .attr("class", "viz3-refline")
+                             .attr("x1", xScale(viz3_ranking_data[0]))
+                             .attr("y1", axis_coords[0])
+                             .attr("x2", xScale(viz3_ranking_data[0]))
+                             .attr("y2", line_bottom)
+                             .attr("stroke-width", GRAPH_LINE_WIDTH)
+                             .attr("stroke", GRAPH_LINE_COLOR);
+
+    // all guide lines has (x1, y1) on ref_line, and (x2, y2) at center of circle
+    var guide_lines = viz3_svg.selectAll(".viz3_guideline")
+                              .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+                              .enter()
+                              .append("line")
+                              .attr("class", "viz3-guideline")
+                              .attr("x1", (d,i) => xScale(viz3_ranking_data[0]))
+                              .attr("y1", (d,i) => axis_coords[i+1] )
+                              .attr("x2", (d,i) => xScale(d) )
+                              .attr("y2", (d,i) => axis_coords[i+1] )
+                              .attr("stroke-width", GRAPH_LINE_WIDTH)
+                              .attr("stroke", GRAPH_LINE_COLOR)
+                              .attr("stroke-dasharray", DASHARRAY_STYLE);
+
     // Render happiness square
     var sqaure = viz3_svg.selectAll("rect")
                          .data(viz3_ranking_data.slice(0,1))
                          .enter()
                          .append("rect")
                          .attr("class", "happiness-ranking-sq")
-                         .attr("x", (d,i) => (xScale(viz3_ranking_data[0]) - SQ_SIDE_LENGTH/2))
+                         .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2))
                          .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
                          .attr("height", SQ_SIDE_LENGTH)
                          .attr("width", SQ_SIDE_LENGTH)
@@ -133,9 +166,9 @@ function initViz3Plot(country) {
                   .enter()
                   .append("circle")
                   .attr("class", "dimension-ranking-circle")
-                  .attr("cx", function(d, i) { return xScale(viz3_ranking_data[i+1]); })
-                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
-                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("cx", (d, i) => xScale(d) )
+                  .attr("cy", (d, i) => axis_coords[i+1] )
+                  .attr("r", CIRCLE_RADIUS)
                   .attr("fill", VIZ3_ACCENT_COLOR)
                   .attr("opacity", CIRCLE_OPACITY)
                   .on("mouseover", handleViz3CircleMouseOver)
@@ -147,40 +180,54 @@ function updateViz3Plot(country) {
         viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
     }
 
+    var ref_line = viz3_svg.select(".viz3-refline")
+                             .transition()
+                             .duration(TRANSITION_DURATION)
+                             .attr("x1", xScale(viz3_ranking_data[0]))
+                             .attr("x2", xScale(viz3_ranking_data[0]))
+
+    var guide_lines = viz3_svg.selectAll(".viz3-guideline")
+                                .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+                                .transition()
+                                .duration(TRANSITION_DURATION)
+                                .attr("x1", xScale(viz3_ranking_data[0]))
+                                .attr("x2", (d,i) => xScale(d));
+
+
     var sq = viz3_svg.selectAll(".happiness-ranking-sq")
                   .data(viz3_ranking_data.slice(0,1))
                   .transition()
-                  .duration(1000)
-                  .attr("x", (d,i) => (xScale(viz3_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+                  .duration(TRANSITION_DURATION)
+                  .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2));
 
     var circ = viz3_svg.selectAll(".dimension-ranking-circle")
                   .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
                   .transition()
-                  .duration(1000)
-                  .attr("cx", function(d, i) { return xScale(viz3_ranking_data[i+1]); });
+                  .duration(TRANSITION_DURATION)
+                  .attr("cx", (d, i) => xScale(d) );
 
 }
 
 function handleViz3CircleMouseOver(d, i) {
     viz3_svg.append("text")
-             .attr('id', "label-" + d.Happiness_Rank)
+             .attr('id', "viz3-label-" + d.Happiness_Rank)
              .attr('x', () => xScale(d) )
              .attr('y', () => (axis_coords[i+1]-CIRCLE_RADIUS-5) )
              .attr("text-anchor", "middle")
-             .text(() => d);
+             .text(d);
 }
 
 function handleViz3SquareMouseOver(d, i) {
     viz3_svg.append("text")
-             .attr('id', "label-" + d.Happiness_Rank)
+             .attr('id', "viz3-label-" + d.Happiness_Rank)
              .attr('x', () => xScale(d) )
              .attr('y', () => (axis_coords[i]-CIRCLE_RADIUS-5) )
              .attr("text-anchor", "middle")
-             .text(() => d);
+             .text(d);
 }
 
 function handleViz3MouseOut(d, i) {
-    d3.select("#label-" + d.Happiness_Rank).remove();
+    d3.select("#viz3-label-" + d.Happiness_Rank).remove();
 }
 
 function handleViz3CountryChange() {
@@ -238,13 +285,27 @@ function initViz4Plot(c1, c2) {
            .text(DIMENSIONS[d].display_name);
     }
 
+    // Render guide lines
+    var guide_lines = viz4_svg.selectAll(".viz4-guideline")
+                              .data(viz4_country1_ranking_data)
+                              .enter()
+                              .append("line")
+                              .attr("class", "viz4-guideline")
+                              .attr("x1", (d,i) => xScale(viz4_country1_ranking_data[i]) )
+                              .attr("y1", (d,i) => axis_coords[i] )
+                              .attr("x2", (d,i) => xScale(viz4_country2_ranking_data[i]) )
+                              .attr("y2", (d,i) => axis_coords[i] )
+                              .attr("stroke-width", GRAPH_LINE_WIDTH)
+                              .attr("stroke", GRAPH_LINE_COLOR)
+                              .attr("stroke-dasharray", DASHARRAY_STYLE);
+
     // Render square for country 1
     var sqaure = viz4_svg.selectAll(".country1-sq")
                          .data(viz4_country1_ranking_data.slice(0,1))
                          .enter()
                          .append("rect")
                          .attr("class", "country1-sq")
-                         .attr("x", (d,i) => (xScale(viz4_country1_ranking_data[0]) - SQ_SIDE_LENGTH/2))
+                         .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2))
                          .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
                          .attr("height", SQ_SIDE_LENGTH)
                          .attr("width", SQ_SIDE_LENGTH)
@@ -252,8 +313,8 @@ function initViz4Plot(c1, c2) {
                          .attr("ry", SQ_CORNER_RADIUS)
                          .attr("fill", VIZ4_C1_ACCENT_COLOR)
                          .attr("opacity", CIRCLE_OPACITY)
-                         // .on("mouseover", handleViz3SquareMouseOver)
-                         // .on("mouseout", handleViz3MouseOut);
+                         .on("mouseover", handleViz4SquareMouseOver)
+                         .on("mouseout", handleViz4MouseOut);
 
     // Render circles for country 1
     var circ = viz4_svg.selectAll(".country1-circle")
@@ -261,13 +322,13 @@ function initViz4Plot(c1, c2) {
                   .enter()
                   .append("circle")
                   .attr("class", "country1-circle")
-                  .attr("cx", function(d, i) { return xScale(viz4_country1_ranking_data[i+1]); })
-                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
-                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("cx", (d,i) => xScale(d) )
+                  .attr("cy", (d,i) => axis_coords[i+1] )
+                  .attr("r", CIRCLE_RADIUS)
                   .attr("fill", VIZ4_C1_ACCENT_COLOR)
                   .attr("opacity", CIRCLE_OPACITY)
-                  // .on("mouseover", handleViz3MouseOver)
-                  // .on("mouseout", handleViz3MouseOut);
+                  .on("mouseover", handleViz4CircleMouseOver)
+                  .on("mouseout", handleViz4MouseOut);
 
     // Render square for country 2
     var sqaure = viz4_svg.selectAll(".country2-sq")
@@ -275,16 +336,16 @@ function initViz4Plot(c1, c2) {
                      .enter()
                      .append("rect")
                      .attr("class", "country2-sq")
-                     .attr("x", (d,i) => (xScale(viz4_country2_ranking_data[0]) - SQ_SIDE_LENGTH/2))
-                     .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2))
+                     .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2) )
+                     .attr("y", (d,i) => (axis_coords[0] - SQ_SIDE_LENGTH/2) )
                      .attr("height", SQ_SIDE_LENGTH)
                      .attr("width", SQ_SIDE_LENGTH)
                      .attr("rx", SQ_CORNER_RADIUS)
                      .attr("ry", SQ_CORNER_RADIUS)
                      .attr("fill", VIZ4_C2_ACCENT_COLOR)
                      .attr("opacity", CIRCLE_OPACITY)
-                     // .on("mouseover", handleViz3SquareMouseOver)
-                     // .on("mouseout", handleViz3MouseOut);
+                     .on("mouseover", handleViz4SquareMouseOver)
+                     .on("mouseout", handleViz4MouseOut);
 
     // Render circles for country 2
     var circ = viz4_svg.selectAll(".country2-circle")
@@ -292,13 +353,13 @@ function initViz4Plot(c1, c2) {
                   .enter()
                   .append("circle")
                   .attr("class", "country2-circle")
-                  .attr("cx", function(d, i) { return xScale(viz4_country2_ranking_data[i+1]); })
-                  .attr("cy", function(d, i) { return axis_coords[i+1]; })
-                  .attr("r", function(d) { return CIRCLE_RADIUS; })
+                  .attr("cx", (d,i) => xScale(d) )
+                  .attr("cy", (d,i) => axis_coords[i+1] )
+                  .attr("r", CIRCLE_RADIUS)
                   .attr("fill", VIZ4_C2_ACCENT_COLOR)
                   .attr("opacity", CIRCLE_OPACITY)
-                  // .on("mouseover", handleViz3MouseOver)
-                  // .on("mouseout", handleViz3MouseOut);
+                  .on("mouseover", handleViz4CircleMouseOver)
+                  .on("mouseout", handleViz4MouseOut);
 }
 
 function updateViz4Plot(c1, c2) {
@@ -307,17 +368,23 @@ function updateViz4Plot(c1, c2) {
             viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS[d].column_name];
         }
 
+        var guide_lines = viz4_svg.selectAll(".viz4-guideline")
+                            .data(viz4_country1_ranking_data)
+                            .transition()
+                            .duration(TRANSITION_DURATION)
+                            .attr("x1", (d,i) => xScale(d) );
+
         var sq = viz4_svg.selectAll(".country1-sq")
                   .data(viz4_country1_ranking_data.slice(0,1))
                   .transition()
-                  .duration(1000)
-                  .attr("x", (d,i) => (xScale(viz4_country1_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+                  .duration(TRANSITION_DURATION)
+                  .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2) );
 
         var circ = viz4_svg.selectAll(".country1-circle")
                   .data(viz4_country1_ranking_data.slice(1,DIMENSIONS.length))
                   .transition()
-                  .duration(1000)
-                  .attr("cx", function(d, i) { return xScale(viz4_country1_ranking_data[i+1]); });
+                  .duration(TRANSITION_DURATION)
+                  .attr("cx", (d,i) => xScale(d) );
     }
 
     if (c2) {
@@ -325,17 +392,23 @@ function updateViz4Plot(c1, c2) {
             viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS[d].column_name];
         }
 
+        var guide_lines = viz4_svg.selectAll(".viz4-guideline")
+                            .data(viz4_country2_ranking_data)
+                            .transition()
+                            .duration(TRANSITION_DURATION)
+                            .attr("x2", (d,i) => xScale(d) );
+
         var sq = viz4_svg.selectAll(".country2-sq")
                   .data(viz4_country2_ranking_data.slice(0,1))
                   .transition()
-                  .duration(1000)
-                  .attr("x", (d,i) => (xScale(viz4_country2_ranking_data[0]) - SQ_SIDE_LENGTH/2));
+                  .duration(TRANSITION_DURATION)
+                  .attr("x", (d,i) => (xScale(d) - SQ_SIDE_LENGTH/2) );
 
         var circ = viz4_svg.selectAll(".country2-circle")
                   .data(viz4_country2_ranking_data.slice(1,DIMENSIONS.length))
                   .transition()
-                  .duration(1000)
-                  .attr("cx", function(d, i) { return xScale(viz4_country2_ranking_data[i+1]); });
+                  .duration(TRANSITION_DURATION)
+                  .attr("cx", (d,i) => xScale(d) );
     }
 }
 
@@ -349,6 +422,28 @@ function handleViz4Country2Change() {
     var viz4C2SelectElem = document.getElementById("viz4-country2-select");
     var viz4Country2 = viz4C2SelectElem.options[viz4C2SelectElem.selectedIndex].value;
     updateViz4Plot(null, viz4Country2);
+}
+
+function handleViz4CircleMouseOver(d, i) {
+    viz4_svg.append("text")
+             .attr('id', "viz4-label-" + d.Happiness_Rank)
+             .attr('x', () => xScale(d) )
+             .attr('y', () => (axis_coords[i+1]-CIRCLE_RADIUS-5) )
+             .attr("text-anchor", "middle")
+             .text(d);
+}
+
+function handleViz4SquareMouseOver(d, i) {
+    viz4_svg.append("text")
+             .attr('id', "viz4-label-" + d.Happiness_Rank)
+             .attr('x', () => xScale(d) )
+             .attr('y', () => (axis_coords[i]-CIRCLE_RADIUS-5) )
+             .attr("text-anchor", "middle")
+             .text(d);
+}
+
+function handleViz4MouseOut(d, i) {
+    d3.select("#viz4-label-" + d.Happiness_Rank).remove();
 }
 
 /*****************************************************************************
