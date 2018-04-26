@@ -11,16 +11,36 @@ function execute(data) {
     var x = d3.scaleLinear()
         .rangeRound([0, width]);
 
+
+    // var max = d3.max(d3.values(data)); 
+
     var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     x.domain(d3.extent(data, function(d) { return d.Happiness_Score; }));
 
+    var scaleRadius = d3.scaleLinear()
+        // .domain(d3.extent(data, function(d) { return d.Population; }))
+        .range([4, 40]);
+
+    scaleRadius.domain(d3.extent(data, function(d) { return d.Population; }));
+
+    console.log("trying this");
+    console.log(scaleRadius(51));
+
     var simulation = d3.forceSimulation(data)
         .force("x", d3.forceX(function(d) { return x(d.Happiness_Score); }).strength(1))
         .force("y", d3.forceY(height / 2))
-        .force("collide", d3.forceCollide(11))
+        .force("collide", d3.forceCollide(function(d) {
+            if (isNaN(d.Population)) {
+                console.log(d.Country);
+                console.log(scaleRadius(d.Population));
+                return 0;
+            }
+            return scaleRadius(d.Population) + 1;
+        }))
+        // .force("collide", d3.forceCollide(11))
         .stop();
 
     for (var i = 0; i < 120; ++i) simulation.tick();
@@ -42,7 +62,15 @@ function execute(data) {
             .polygons(data)).enter().append("g");
 
     cell.append("circle")
-        .attr("r", 10)
+        .attr("r", function(d) {
+            var radius = scaleRadius(d.data.Population);
+            if (isNaN(radius)) {
+                console.log(d.data.Country);
+                return 0;
+            } else {
+                return radius;
+            }
+        })
         .attr("cx", function(d) { return d.data.x; })
         .attr("cy", function(d) { return d.data.y; });
 
@@ -79,23 +107,24 @@ d3.csv("data/world-happiness-report/2017.csv").then(function(happinessData) {
 
     countryInfo = happinessData;
 
-    d3.csv("data/population.csv").then(function(populationData) {
+    d3.csv("data/population.csv" + '?' + Math.floor(Math.random() * 1000)).then(function(populationData) {
         // console.log(countryInfo);
 
         populationData.forEach(function(d) {
             let name = d["Country Name"];
             let population = +d["2016"];
+
             countryInfo.forEach(function(thisCountry) {
                 // console.log(countryInfo.Country);
                 if (thisCountry.Country == name) {
-                    // console.log(name);
+                    // console.log(name);   
                     thisCountry.Population = population;
                 }
             });
         });
 
+        execute(countryInfo);
+        console.log("reading and printing");
+        console.log(countryInfo);
     });
-
-    execute(countryInfo);
-    console.log(countryInfo);
 });
