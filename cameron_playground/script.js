@@ -5,6 +5,25 @@ function areaToRadius(area) {
     return radius;
 }
 
+function continentToColor(continent) {
+    switch (continent) {
+        case "Asia":
+            return "red";
+        case "Africa":
+            return "green";
+        case "South America":
+            return "yellow";
+        case "North America":
+            return "blue";
+        case "Europe":
+            return "purple";
+        case "Oceania":
+            return "orange";
+        default:
+            return "black";
+    }
+}
+
 function execute(data) {
     var svg = d3.select("svg"),
         margin = { top: 40, right: 40, bottom: 40, left: 40 },
@@ -59,7 +78,10 @@ function execute(data) {
             return radius;
         })
         .attr("cx", function(d) { return d.data.x; })
-        .attr("cy", function(d) { return d.data.y; });
+        .attr("cy", function(d) { return d.data.y; })
+        .style("fill", function(d) {
+            return continentToColor(d.data.Continent);
+        });
 
     cell.append("path")
         .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
@@ -73,7 +95,6 @@ function type(d) {
     d.value = +d.value;
     return d;
 }
-
 
 d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
