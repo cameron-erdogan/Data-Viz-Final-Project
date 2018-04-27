@@ -8,21 +8,22 @@ function areaToRadius(area) {
 function continentToColor(continent) {
     switch (continent) {
         case "Asia":
-            return "red";
+            return "F8E21C";
         case "Africa":
-            return "green";
+            return "DB5082";
         case "South America":
-            return "yellow";
+            return "000000";
         case "North America":
-            return "blue";
+            return "bbbbbb";
         case "Europe":
-            return "purple";
+            return "C1C2FF";
         case "Oceania":
-            return "orange";
+            return "9A3CFF";
         default:
-            return "black";
+            return "red";
     }
 }
+
 
 function execute(data) {
     var svg = d3.select("svg"),
