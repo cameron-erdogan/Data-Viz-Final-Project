@@ -1,5 +1,11 @@
 var countryInfo;
 
+function areaToRadius(area) {
+    let radius = Math.sqrt(area) / Math.PI;
+    console.log(radius);
+    return radius;
+}
+
 function execute(data) {
     var svg = d3.select("svg"),
         margin = { top: 40, right: 40, bottom: 40, left: 40 },
@@ -20,14 +26,14 @@ function execute(data) {
 
     x.domain(d3.extent(data, function(d) { return d.Happiness_Score; }));
 
-    var scaleRadius = d3.scaleLinear()
+    var scaleArea = d3.scaleLinear()
         // .domain(d3.extent(data, function(d) { return d.Population; }))
-        .range([4, 40]);
+        .range([200, 5000]);
 
-    scaleRadius.domain(d3.extent(data, function(d) { return d.Population; }));
+    scaleArea.domain(d3.extent(data, function(d) { return d.Population; }));
 
     console.log("trying this");
-    console.log(scaleRadius(51));
+    console.log(scaleArea(51));
 
     var simulation = d3.forceSimulation(data)
         .force("x", d3.forceX(function(d) { return x(d.Happiness_Score); }).strength(1))
@@ -35,12 +41,13 @@ function execute(data) {
         .force("collide", d3.forceCollide(function(d) {
             if (isNaN(d.Population)) {
                 console.log(d.Country);
-                console.log(scaleRadius(d.Population));
+                console.log(scaleArea(d.Population));
                 return 0;
             }
-            return scaleRadius(d.Population) + 1;
+
+            let area = scaleArea(d.Population);
+            return areaToRadius(area) + 1;
         }))
-        // .force("collide", d3.forceCollide(11))
         .stop();
 
     for (var i = 0; i < 120; ++i) simulation.tick();
@@ -63,11 +70,12 @@ function execute(data) {
 
     cell.append("circle")
         .attr("r", function(d) {
-            var radius = scaleRadius(d.data.Population);
-            if (isNaN(radius)) {
+            var area = scaleArea(d.data.Population);
+            if (isNaN(area)) {
                 console.log(d.data.Country);
                 return 0;
             } else {
+                let radius = areaToRadius(area);
                 return radius;
             }
         })
@@ -78,7 +86,7 @@ function execute(data) {
         .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 
     cell.append("title")
-        .text(function(d) { return d.data.Country + "\n" + formatValue(d.data.Happiness_Score); });
+        .text(function(d) { return d.data.Country + "\n" + d.data.Continent + "\n" + formatValue(d.data.Happiness_Score); });
 }
 
 function type(d) {
@@ -88,7 +96,7 @@ function type(d) {
 }
 
 
-d3.csv("data/world-happiness-report/2017.csv").then(function(happinessData) {
+d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     happinessData.forEach(function(d) {
 
@@ -103,28 +111,12 @@ d3.csv("data/world-happiness-report/2017.csv").then(function(happinessData) {
         d.Trust_Government_Corruption = +d.Trust_Government_Corruption;
         d.Whisker_High = +d.Whisker_High;
         d.Whisker_Low = +d.Whisker_Low;
+        d.Population = +d.Population;
     });
 
     countryInfo = happinessData;
 
-    d3.csv("data/population.csv" + '?' + Math.floor(Math.random() * 1000)).then(function(populationData) {
-        // console.log(countryInfo);
-
-        populationData.forEach(function(d) {
-            let name = d["Country Name"];
-            let population = +d["2016"];
-
-            countryInfo.forEach(function(thisCountry) {
-                // console.log(countryInfo.Country);
-                if (thisCountry.Country == name) {
-                    // console.log(name);   
-                    thisCountry.Population = population;
-                }
-            });
-        });
-
-        execute(countryInfo);
-        console.log("reading and printing");
-        console.log(countryInfo);
-    });
+    execute(countryInfo);
+    console.log("reading and printing");
+    console.log(countryInfo);
 });
