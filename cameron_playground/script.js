@@ -1,7 +1,7 @@
 var countryInfo;
 
 function areaToRadius(area) {
-    let radius = Math.sqrt(area) / Math.PI;
+    let radius = Math.sqrt(area);
     console.log(radius);
     return radius;
 }
@@ -28,7 +28,7 @@ function execute(data) {
 
     var scaleArea = d3.scaleLinear()
         // .domain(d3.extent(data, function(d) { return d.Population; }))
-        .range([200, 5000]);
+        .range([20, 1000]);
 
     scaleArea.domain(d3.extent(data, function(d) { return d.Population; }));
 
@@ -46,7 +46,7 @@ function execute(data) {
             }
 
             let area = scaleArea(d.Population);
-            return areaToRadius(area) + 1;
+            return areaToRadius(area) + 2;
         }))
         .stop();
 
