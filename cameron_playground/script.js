@@ -1,8 +1,7 @@
 var countryInfo;
 
 function areaToRadius(area) {
-    let radius = Math.sqrt(area);
-    console.log(radius);
+    let radius = Math.sqrt(area); //not gonna worry about diving by Pi
     return radius;
 }
 
@@ -17,34 +16,19 @@ function execute(data) {
     var x = d3.scaleLinear()
         .rangeRound([0, width]);
 
-
-    // var max = d3.max(d3.values(data)); 
-
     var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
     x.domain(d3.extent(data, function(d) { return d.Happiness_Score; }));
 
     var scaleArea = d3.scaleLinear()
-        // .domain(d3.extent(data, function(d) { return d.Population; }))
-        .range([20, 1000]);
-
-    scaleArea.domain(d3.extent(data, function(d) { return d.Population; }));
-
-    console.log("trying this");
-    console.log(scaleArea(51));
+        .range([20, 1000])
+        .domain(d3.extent(data, function(d) { return d.Population; }));
 
     var simulation = d3.forceSimulation(data)
         .force("x", d3.forceX(function(d) { return x(d.Happiness_Score); }).strength(1))
         .force("y", d3.forceY(height / 2))
         .force("collide", d3.forceCollide(function(d) {
-            if (isNaN(d.Population)) {
-                console.log(d.Country);
-                console.log(scaleArea(d.Population));
-                return 0;
-            }
-
             let area = scaleArea(d.Population);
             return areaToRadius(area) + 2;
         }))
@@ -71,13 +55,8 @@ function execute(data) {
     cell.append("circle")
         .attr("r", function(d) {
             var area = scaleArea(d.data.Population);
-            if (isNaN(area)) {
-                console.log(d.data.Country);
-                return 0;
-            } else {
-                let radius = areaToRadius(area);
-                return radius;
-            }
+            let radius = areaToRadius(area);
+            return radius;
         })
         .attr("cx", function(d) { return d.data.x; })
         .attr("cy", function(d) { return d.data.y; });
