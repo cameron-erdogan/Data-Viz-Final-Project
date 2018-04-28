@@ -1,6 +1,6 @@
 const CANVAS_HEIGHT   =   700;
 const CANVAS_WIDTH    =   700;
-const PADDING         =   50;
+const PADDING         =   80;
 const RADIUS          =   10;
 
 var countryInfo, 
@@ -8,7 +8,8 @@ var countryInfo,
     x_dimension, 
     y_dimension, 
     x_scale, 
-    y_scale;
+    y_scale,
+    area_scale;
 
 function xVal(d) {
     return x_dimension ? d[x_dimension] : 0;
@@ -16,6 +17,25 @@ function xVal(d) {
 
 function yVal(d) {
     return y_dimension ? d[y_dimension] : 0;
+}
+
+function continentToColor(continent) {
+    switch (continent) {
+        case "Asia":
+            return "F8E21C";
+        case "Africa":
+            return "DB5082";
+        case "South America":
+            return "000000";
+        case "North America":
+            return "bbbbbb";
+        case "Europe":
+            return "C1C2FF";
+        case "Oceania":
+            return "9A3CFF";
+        default:
+            return "red";
+    }
 }
 
 function handleMouseOver(d, i) {
@@ -31,7 +51,16 @@ function handleMouseOut(d, i) {
     d3.select("#label-" + d.Happiness_Rank).remove();
 }
 
+function computeCircleRadius(population) {
+    var radius = Math.sqrt(area_scale(population)) + 2;
+    return radius;
+}
+
 function initPlot() {
+    area_scale = d3.scaleLinear()
+                    .range([40, 2000])
+                    .domain(d3.extent(countryInfo, function(d) { return d.Population; }));
+
     var xElem = document.getElementById("x-dim");
     x_dimension = xElem.options[xElem.selectedIndex].value;
     
@@ -39,7 +68,6 @@ function initPlot() {
     y_dimension = yElem.options[yElem.selectedIndex].value;
 
     // setting up for x
-    var xVal = function(d) { return d[x_dimension];}
     var xmax = d3.max(countryInfo, xVal);
     var xmin = d3.min(countryInfo, xVal);
     var xScale = d3.scaleLinear()
@@ -50,7 +78,6 @@ function initPlot() {
     var xAxis = d3.axisBottom(xScale);
 
     // setting up for y
-    var yVal = function(d) { return d[y_dimension];}
     var ymax = d3.max(countryInfo, yVal);
     var ymin = d3.min(countryInfo, yVal);
     var yScale = d3.scaleLinear()
@@ -60,21 +87,30 @@ function initPlot() {
     var yMap = function(d) { return yScale(yValue(d));}
     var yAxis = d3.axisLeft(yScale);
 
+    // force simulation
+    forceSimulation();
 
-    // rendering scatter plot
     var circ = svg.selectAll("circle")
                   .data(countryInfo)
                   .enter()
                   .append("circle")
-                  .attr("cx", function(d) { return xScale(xVal(d)); })
-                  .attr("cy", function(d) { return yScale(yVal(d)); })
-                  .attr("r", function(d) { return RADIUS; })
-                  .attr("fill", "blue")
-                  .attr("opacity", 0.5)
-                  .on("mouseover", handleMouseOver)
-                  .on("mouseout", handleMouseOut);
+                  .attr("cx", (d) => d.x )
+                  .attr("cy", (d) => d.y )
+                  .attr("r", (d) => computeCircleRadius(d.Population))
+                  .style("fill", (d) => continentToColor(d.Continent))
+                  .append("svg:title")
+                  .text((d, i) => { return d.Country; });
 
     renderScaleAndLabel(xAxis, yAxis)
+}
+
+function forceSimulation() {
+    var simulation = d3.forceSimulation(countryInfo)
+        .force("x", d3.forceX((d) => x_scale(xVal(d))).strength(1))
+        .force("y", d3.forceY((d) => y_scale(yVal(d))).strength(1))
+        .force("collide", d3.forceCollide(( (d) => computeCircleRadius(d.Population)+2)))
+        .stop();
+    for (var i = 0; i < 200; ++i) simulation.tick();
 }
 
 function renderScaleAndLabel(xAxis, yAxis) {
@@ -118,7 +154,6 @@ function clearScaleAndLabel() {
 function updatePlot() {
 
     // setting up for x
-    var xVal = function(d) { return d[x_dimension];}
     var xmax = d3.max(countryInfo, xVal);
     var xmin = d3.min(countryInfo, xVal);
     var xScale = d3.scaleLinear()
@@ -126,10 +161,9 @@ function updatePlot() {
                    .range([PADDING, CANVAS_WIDTH-PADDING]);
     x_scale = xScale;
     var xMap = function(d) { return xScale(xValue(d));}
-    var xAxis = d3.axisBottom(xScale);
+    var xAxis = d3.axisBottom(x_scale);
 
     // setting up for y
-    var yVal = function(d) { return d[y_dimension];}
     var ymax = d3.max(countryInfo, yVal);
     var ymin = d3.min(countryInfo, yVal);
     var yScale = d3.scaleLinear()
@@ -137,16 +171,17 @@ function updatePlot() {
                    .range([CANVAS_HEIGHT-PADDING, PADDING]);
     y_scale = yScale;
     var yMap = function(d) { return yScale(yValue(d));}
-    var yAxis = d3.axisLeft(yScale);
+    var yAxis = d3.axisLeft(y_scale);
 
+    forceSimulation();
 
     // rendering scatter plot
     var circ = svg.selectAll("circle")
                   .data(countryInfo)
                   .transition()
                   .duration(1000)
-                  .attr("cx", function(d) { return xScale(xVal(d)); })
-                  .attr("cy", function(d) { return yScale(yVal(d)); });
+                  .attr("cx", (d) => d.x)
+                  .attr("cy", (d) => d.y);
 
     clearScaleAndLabel();
     renderScaleAndLabel(xAxis, yAxis);
@@ -162,9 +197,10 @@ function handleDimensionChange() {
     updatePlot();
 }
 
-d3.csv("data/world-happiness-report/2017.csv").then(function(happinessData) {
+d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     happinessData.forEach(function(d) {
+
         d.Dystopia_Residual = +d.Dystopia_Residual;
         d.Economy_GDP_Per_Capita = +d.Economy_GDP_Per_Capita;
         d.Family = +d.Family;
@@ -176,26 +212,10 @@ d3.csv("data/world-happiness-report/2017.csv").then(function(happinessData) {
         d.Trust_Government_Corruption = +d.Trust_Government_Corruption;
         d.Whisker_High = +d.Whisker_High;
         d.Whisker_Low = +d.Whisker_Low;
+        d.Population = +d.Population;
     });
 
     countryInfo = happinessData;
-
-    d3.csv("data/population.csv").then(function(populationData) {
-        // console.log(countryInfo);
-
-        populationData.forEach(function(d) {
-            let name = d["Country Name"];
-            let population = +d["2016"];
-            countryInfo.forEach(function(thisCountry) {
-                // console.log(countryInfo.Country);
-                if (thisCountry.Country == name) {
-                    // console.log(name);
-                    thisCountry.Population = population;
-                }
-            });
-        });
-
-    });
 
     initPlot();
 });

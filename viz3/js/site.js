@@ -460,7 +460,7 @@ viz4_svg = d3.select("#viz4-plot")
               .attr("height", CANVAS_HEIGHT)
               .attr("width", CANVAS_WIDTH);
 
-d3.csv("data/world-happiness-report/2017_with_ranking.csv").then(function(happinessData) {
+d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     happinessData.forEach(function(d) {
         d.Dystopia_Residual = +d.Dystopia_Residual;
@@ -480,26 +480,11 @@ d3.csv("data/world-happiness-report/2017_with_ranking.csv").then(function(happin
         d.Trust_Government_Corruption_Rank = +d.Trust_Government_Corruption_Rank;
         d.Whisker_High = +d.Whisker_High;
         d.Whisker_Low = +d.Whisker_Low;
+        d.Population = +d.Population;
+
     });
 
     countryInfo = happinessData;
-
-    d3.csv("data/population.csv").then(function(populationData) {
-        // console.log(countryInfo);
-
-        populationData.forEach(function(d) {
-            let name = d["Country Name"];
-            let population = +d["2016"];
-            countryInfo.forEach(function(thisCountry) {
-                // console.log(countryInfo.Country);
-                if (thisCountry.Country == name) {
-                    // console.log(name);
-                    thisCountry.Population = population;
-                }
-            });
-        });
-
-    });
 
     countryInfoMap = d3.map(countryInfo, (d) => d.Country);
     xScale = d3.scaleLinear()
