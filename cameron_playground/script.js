@@ -1,4 +1,4 @@
-var countryInfo;
+var countryInfo, swarm_svg;
 
 function areaToRadius(area) {
     let radius = Math.sqrt(area); //not gonna worry about diving by Pi
@@ -25,18 +25,28 @@ function continentToColor(continent) {
 }
 
 
-function execute(data) {
-    var svg = d3.select("svg"),
-        margin = { top: 40, right: 40, bottom: 40, left: 40 },
-        width = svg.attr("width") - margin.left - margin.right,
-        height = svg.attr("height") - margin.top - margin.bottom;
+function initSwarmPlot(data) {
+    // width="900" height="400"
+    // var svg =
+    // viz4_svg = d3.select("#viz4-plot")
+    //           .append("svg")
+    //           .attr("height", CANVAS_HEIGHT)
+    //           .attr("width", CANVAS_WIDTH);
+    // swarm_svg = d3.select("#swarm-chart")
+    //     .append("svg")
+    //     .attr("height", 400)
+    //     .attr("width", 900);
+
+    var margin = { top: 40, right: 40, bottom: 40, left: 40 },
+        width = swarm_svg.attr("width") - margin.left - margin.right,
+        height = swarm_svg.attr("height") - margin.top - margin.bottom;
 
     var formatValue = d3.format(".3s");
 
     var x = d3.scaleLinear()
         .rangeRound([0, width]);
 
-    var g = svg.append("g")
+    var g = swarm_svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     x.domain(d3.extent(data, function(d) { return d.Happiness_Score; }));
@@ -91,11 +101,10 @@ function execute(data) {
         .text(function(d) { return d.data.Country + "\n" + d.data.Continent + "\n" + formatValue(d.data.Happiness_Score); });
 }
 
-function type(d) {
-    if (!d.value) return;
-    d.value = +d.value;
-    return d;
-}
+swarm_svg = d3.select("#swarm-plot")
+    .append("svg")
+    .attr("height", 400)
+    .attr("width", 900);
 
 d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
@@ -117,7 +126,7 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     countryInfo = happinessData;
 
-    execute(countryInfo);
+    initSwarmPlot(countryInfo);
     console.log("reading and printing");
     console.log(countryInfo);
 });
