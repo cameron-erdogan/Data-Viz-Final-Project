@@ -36,7 +36,7 @@ const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 // INTERACTION SETTINGS
 const TRANSITION_DURATION = 1000;
 
-var countryInfo, swarm_svg;
+var countryInfo, swarmSVG;
 
 var viz3_ranking_data = [1, 1, 1, 1, 1, 1, 1];
 var viz4_country1_ranking_data = [1, 1, 1, 1, 1, 1, 1];
@@ -67,29 +67,21 @@ function continentToColor(continent) {
     }
 }
 
-
 function initSwarmPlot(data) {
-    // width="900" height="400"
-    // var svg =
-    // viz4_svg = d3.select("#viz4-plot")
-    //           .append("svg")
-    //           .attr("height", CANVAS_HEIGHT)
-    //           .attr("width", CANVAS_WIDTH);
-    // swarm_svg = d3.select("#swarm-chart")
-    //     .append("svg")
-    //     .attr("height", 400)
-    //     .attr("width", 900);
 
     var margin = { top: 40, right: 40, bottom: 40, left: 40 },
-        width = swarm_svg.attr("width") - margin.left - margin.right,
-        height = swarm_svg.attr("height") - margin.top - margin.bottom;
+        width = swarmSVG
+        .attr("width") - margin.left - margin.right,
+        height = swarmSVG
+        .attr("height") - margin.top - margin.bottom;
 
     var formatValue = d3.format(".3s");
 
     var x = d3.scaleLinear()
         .rangeRound([0, width]);
 
-    var g = swarm_svg.append("g")
+    var g = swarmSVG
+        .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     x.domain(d3.extent(data, function(d) { return d.Happiness_Score; }));
@@ -144,10 +136,25 @@ function initSwarmPlot(data) {
         .text(function(d) { return d.data.Country + "\n" + d.data.Continent + "\n" + formatValue(d.data.Happiness_Score); });
 }
 
-swarm_svg = d3.select("#swarm-plot")
+function updateSwarmPlot(parameter) {
+    //should be key of the parameter to change
+    console.log(parameter);
+
+}
+
+function handleSwarmParameterChange() {
+    // var viz4C2SelectElem = document.getElementById("viz4-country2-select");
+    // var viz4Country2 = viz4C2SelectElem.options[viz4C2SelectElem.selectedIndex].value;
+    // updateViz4Plot(null, viz4Country2);
+    var swarmSelectElem = document.getElementById("swarm-parameter-select");
+    var swarmParameter = swarmSelectElem.options[swarmSelectElem.selectedIndex].value;
+    updateSwarmPlot(swarmParameter);
+}
+
+swarmSVG = d3.select("#swarm-plot")
     .append("svg")
-    .attr("height", 400)
-    .attr("width", 900);
+    .attr("height", CANVAS_HEIGHT)
+    .attr("width", CANVAS_WIDTH);
 
 d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
@@ -170,6 +177,13 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
     countryInfo = happinessData;
 
     initSwarmPlot(countryInfo);
-    console.log("reading and printing");
     console.log(countryInfo);
 });
+
+/*****************************************************************************
+ * Event Handlers
+ */
+var swarmSelect = d3.select('#swarm-parameter-select')
+    .on("change", function() {
+        handleSwarmParameterChange();
+    });

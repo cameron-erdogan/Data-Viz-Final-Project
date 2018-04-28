@@ -26,6 +26,11 @@
         .cells :hover circle {
             fill: red;
         }
+        
+        #swarm-plot {
+            border-style: solid;
+            border-width: medium;
+        }
     </style>
 </head>
 
@@ -33,11 +38,18 @@
 
 
     <h1>Jus Playn</h1>
+    <select id="swarm-parameter-select">
+        <option value="Happiness" selected="selected">Happiness</option>
+        <option value="GDP Per Capita">GDP Per Capita</option>
+        <option value="Family">Family</option>
+        <option value="Freedom">Freedom</option>
+        <option value="Generosity">Generosity</option>
+        <option value="Life Expectancy">Life Expectancy</option>
+        <option value="Trust in Government">Trust in Government</option>    
+    </select>
     <div id="swarm-plot">
 
     </div>
-    <!-- <svg width="900" height="400" id="swarm-chart">
-    </svg> -->
 </body>
 
 <script type="application/javascript" src="script.js"></script>
