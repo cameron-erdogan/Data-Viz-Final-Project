@@ -36,7 +36,7 @@ const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 // INTERACTION SETTINGS
 const TRANSITION_DURATION = 1000;
 
-const DIMENSIONS = [{
+const DIMENSIONS_RANK = [{
         'column_name': "Happiness_Rank",
         'display_name': "Happiness"
     },
@@ -70,8 +70,9 @@ const DIMENSIONS = [{
         'column_name': "Trust_Government_Corruption_Rank",
         'display_name': "Trust in Government"
     },
+];
 
-    {
+const DIMENSIONS_SCORE = [{
         'column_name': "Happiness_Score",
         'display_name': "Happiness"
     },

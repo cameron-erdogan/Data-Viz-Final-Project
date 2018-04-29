@@ -30,7 +30,7 @@ function initSwarmPlot() {
     //start with all of the country info
     //everywhere it says happiness_score in the bottom can be replaced by something else
     var data = countryInfo;
-    var parameter = DIMENSIONS[0].column_name;
+    var parameter = DIMENSIONS_SCORE[0].column_name;
 
     var margin = { top: 40, right: 40, bottom: 40, left: 40 },
         width = swarmSVG

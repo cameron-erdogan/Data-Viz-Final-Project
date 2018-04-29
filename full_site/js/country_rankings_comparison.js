@@ -35,18 +35,18 @@ function initViz4Plot(c1, c2) {
         .attr("y", TOP_PADDING - 25)
         .text("Rank");
 
-    for (d = 0; d < DIMENSIONS.length; d++) {
+    for (d = 0; d < DIMENSIONS_RANK.length; d++) {
         var yCoord = (yScale(d) + yScale(d + 1)) / 2;
         axis_coords[d] = yCoord;
-        viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS[d].column_name];
-        viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS[d].column_name];
+        viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS_RANK[d].column_name];
+        viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS_RANK[d].column_name];
 
         viz4_svg.append("text")
             .attr("class", "dimension-label")
             .attr("text-anchor", "end")
             .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
             .attr("y", yCoord - DIMENSION_LABEL_Y_OFFSET)
-            .text(DIMENSIONS[d].display_name);
+            .text(DIMENSIONS_RANK[d].display_name);
     }
 
     // Render guide lines
@@ -82,7 +82,7 @@ function initViz4Plot(c1, c2) {
 
     // Render circles for country 1
     var circ = viz4_svg.selectAll(".country1-circle")
-        .data(viz4_country1_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz4_country1_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .enter()
         .append("circle")
         .attr("class", "country1-circle")
@@ -113,7 +113,7 @@ function initViz4Plot(c1, c2) {
 
     // Render circles for country 2
     var circ = viz4_svg.selectAll(".country2-circle")
-        .data(viz4_country2_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz4_country2_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .enter()
         .append("circle")
         .attr("class", "country2-circle")
@@ -128,8 +128,8 @@ function initViz4Plot(c1, c2) {
 
 function updateViz4Plot(c1, c2) {
     if (c1) {
-        for (d = 0; d < DIMENSIONS.length; d++) {
-            viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS[d].column_name];
+        for (d = 0; d < DIMENSIONS_RANK.length; d++) {
+            viz4_country1_ranking_data[d] = countryInfoMap.get(c1)[DIMENSIONS_RANK[d].column_name];
         }
 
         var guide_lines = viz4_svg.selectAll(".viz4-guideline")
@@ -145,15 +145,15 @@ function updateViz4Plot(c1, c2) {
             .attr("x", (d, i) => (xScale(d) - SQ_SIDE_LENGTH / 2));
 
         var circ = viz4_svg.selectAll(".country1-circle")
-            .data(viz4_country1_ranking_data.slice(1, DIMENSIONS.length))
+            .data(viz4_country1_ranking_data.slice(1, DIMENSIONS_RANK.length))
             .transition()
             .duration(TRANSITION_DURATION)
             .attr("cx", (d, i) => xScale(d));
     }
 
     if (c2) {
-        for (d = 0; d < DIMENSIONS.length; d++) {
-            viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS[d].column_name];
+        for (d = 0; d < DIMENSIONS_RANK.length; d++) {
+            viz4_country2_ranking_data[d] = countryInfoMap.get(c2)[DIMENSIONS_RANK[d].column_name];
         }
 
         var guide_lines = viz4_svg.selectAll(".viz4-guideline")
@@ -169,7 +169,7 @@ function updateViz4Plot(c1, c2) {
             .attr("x", (d, i) => (xScale(d) - SQ_SIDE_LENGTH / 2));
 
         var circ = viz4_svg.selectAll(".country2-circle")
-            .data(viz4_country2_ranking_data.slice(1, DIMENSIONS.length))
+            .data(viz4_country2_ranking_data.slice(1, DIMENSIONS_RANK.length))
             .transition()
             .duration(TRANSITION_DURATION)
             .attr("cx", (d, i) => xScale(d));

@@ -35,16 +35,16 @@ function initViz3Plot(country) {
         .attr("y", TOP_PADDING - 25)
         .text("Rank");
 
-    for (d = 0; d < DIMENSIONS.length; d++) {
+    for (d = 0; d < DIMENSIONS_RANK.length; d++) {
         var yCoord = (yScale(d) + yScale(d + 1)) / 2;
         axis_coords[d] = yCoord;
-        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
+        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS_RANK[d].column_name];
         viz3_svg.append("text")
             .attr("class", "dimension-label")
             .attr("text-anchor", "end")
             .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
             .attr("y", yCoord - DIMENSION_LABEL_Y_OFFSET)
-            .text(DIMENSIONS[d].display_name);
+            .text(DIMENSIONS_RANK[d].display_name);
     }
 
     // Render graph lines
@@ -59,7 +59,7 @@ function initViz3Plot(country) {
 
     // all guide lines has (x1, y1) on ref_line, and (x2, y2) at center of circle
     var guide_lines = viz3_svg.selectAll(".viz3_guideline")
-        .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz3_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .enter()
         .append("line")
         .attr("class", "viz3-guideline")
@@ -90,7 +90,7 @@ function initViz3Plot(country) {
 
     // Render circles
     var circ = viz3_svg.selectAll("circle")
-        .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz3_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .enter()
         .append("circle")
         .attr("class", "dimension-ranking-circle")
@@ -104,8 +104,8 @@ function initViz3Plot(country) {
 }
 
 function updateViz3Plot(country) {
-    for (d = 0; d < DIMENSIONS.length; d++) {
-        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS[d].column_name];
+    for (d = 0; d < DIMENSIONS_RANK.length; d++) {
+        viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS_RANK[d].column_name];
     }
 
     var ref_line = viz3_svg.select(".viz3-refline")
@@ -115,7 +115,7 @@ function updateViz3Plot(country) {
         .attr("x2", xScale(viz3_ranking_data[0]))
 
     var guide_lines = viz3_svg.selectAll(".viz3-guideline")
-        .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz3_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .transition()
         .duration(TRANSITION_DURATION)
         .attr("x1", xScale(viz3_ranking_data[0]))
@@ -129,7 +129,7 @@ function updateViz3Plot(country) {
         .attr("x", (d, i) => (xScale(d) - SQ_SIDE_LENGTH / 2));
 
     var circ = viz3_svg.selectAll(".dimension-ranking-circle")
-        .data(viz3_ranking_data.slice(1, DIMENSIONS.length))
+        .data(viz3_ranking_data.slice(1, DIMENSIONS_RANK.length))
         .transition()
         .duration(TRANSITION_DURATION)
         .attr("cx", (d, i) => xScale(d));

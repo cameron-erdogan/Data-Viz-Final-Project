@@ -43,7 +43,7 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
         .domain([1, COUNTRIES_COUNT])
         .range([LEFT_PADDING, CANVAS_WIDTH - LEFT_PADDING - RIGHT_PADDING]);
     yScale = d3.scaleLinear()
-        .domain([0, DIMENSIONS.length])
+        .domain([0, DIMENSIONS_RANK.length])
         .range([TOP_PADDING + NUMERAL_LABEL_GUTTER, CANVAS_HEIGHT - BOTTOM_PADDING]);
 
     initViz3Plot(VIZ3_INIT_COUNTRY);
