@@ -185,7 +185,6 @@ function updateSwarmPlot(parameter) {
     //should be key of the parameter to change
     console.log(parameter);
     var data = countryInfo;
-    // var parameter = DIMENSIONS[0].column_name;
 
     var margin = { top: 40, right: 40, bottom: 40, left: 40 },
         width = swarmSVG
@@ -213,7 +212,6 @@ function updateSwarmPlot(parameter) {
         .stop();
     for (var i = 0; i < 120; ++i) simulation.tick();
 
-    //need to select these
     var g = swarmSVG
         .select(".parent-group");
 
@@ -246,9 +244,6 @@ function updateSwarmPlot(parameter) {
 }
 
 function handleSwarmParameterChange() {
-    // var viz4C2SelectElem = document.getElementById("viz4-country2-select");
-    // var viz4Country2 = viz4C2SelectElem.options[viz4C2SelectElem.selectedIndex].value;
-    // updateViz4Plot(null, viz4Country2);
     var swarmSelectElem = document.getElementById("swarm-parameter-select");
     var swarmParameter = swarmSelectElem.options[swarmSelectElem.selectedIndex].value;
     updateSwarmPlot(swarmParameter);
