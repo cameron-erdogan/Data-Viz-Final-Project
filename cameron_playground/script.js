@@ -149,7 +149,7 @@ function initSwarmPlot() {
     g.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).ticks(10, ".1s"));
+        .call(d3.axisBottom(x).ticks(10, ".1f"));
 
     var cell = g.append("g")
         .attr("class", "cells")
@@ -199,7 +199,6 @@ function updateSwarmPlot(parameter) {
         .rangeRound([0, width]);
     x.domain(d3.extent(data, function(d) { return d[parameter]; }));
 
-
     scaleArea = d3.scaleLinear()
         .range([20, 1000])
         .domain(d3.extent(data, function(d) { return d.Population; }));
@@ -212,7 +211,6 @@ function updateSwarmPlot(parameter) {
             return areaToRadius(area) + 2;
         }))
         .stop();
-
     for (var i = 0; i < 120; ++i) simulation.tick();
 
     //need to select these
@@ -230,20 +228,15 @@ function updateSwarmPlot(parameter) {
             .polygons(data));
 
     g.select(".axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).ticks(10, ".1s"));
+        .transition()
+        .duration(TRANSITION_DURATION)
+        .call(d3.axisBottom(x).ticks(10, ".1f"));
 
     cell.select("circle")
-        .attr("r", function(d) {
-            var area = scaleArea(d.data.Population);
-            let radius = areaToRadius(area);
-            return radius;
-        })
+        .transition()
+        .duration(TRANSITION_DURATION)
         .attr("cx", function(d) { return d.data.x; })
-        .attr("cy", function(d) { return d.data.y; })
-        .style("fill", function(d) {
-            return continentToColor(d.data.Continent);
-        });
+        .attr("cy", function(d) { return d.data.y; });
 
     cell.select("path")
         .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
