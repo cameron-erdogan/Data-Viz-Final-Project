@@ -13,10 +13,44 @@
             stroke-opacity: 0.7;
             shape-rendering: crispEdges;
         }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+        
+        .axis text {
+            font: 10px sans-serif;
+        }
+        
+        .cells path {
+            fill: none;
+            pointer-events: all;
+        }
+        
+        #swarm-plot {
+            border-style: solid;
+            border-width: thin;
+        }
     </style>
 </head>
 
 <body>
+
+    <select id="swarm-parameter-select">
+        <option value="Happiness_Score" selected="selected">Happiness</option>
+        <option value="Economy_GDP_Per_Capita">GDP Per Capita</option>
+        <option value="Family">Family</option>
+        <option value="Freedom">Freedom</option>
+        <option value="Generosity">Generosity</option>
+        <option value="Health_Life_Expectancy">Life Expectancy</option>
+        <option value="Trust_Government_Corruption">Trust in Government</option>    
+    </select>
+    <div id="swarm-plot">
+
+    </div>
 
     <span style="color: blue;">Blue:</span>
     <select id="viz3-country-select">
@@ -71,6 +105,7 @@
     </div>
 
     <script type="application/javascript" src="js/constants_and_declarations.js"></script>
+    <script type="application/javascript" src="js/swarm.js"></script>
     <script type="application/javascript" src="js/country_rankings.js"></script>
     <script type="application/javascript" src="js/country_rankings_comparison"></script>
     <script type="application/javascript" src="js/load_data.js"></script>

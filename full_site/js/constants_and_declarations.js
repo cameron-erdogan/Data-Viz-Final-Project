@@ -69,6 +69,41 @@ const DIMENSIONS = [{
     {
         'column_name': "Trust_Government_Corruption_Rank",
         'display_name': "Trust in Government"
+    },
+
+    {
+        'column_name': "Happiness_Score",
+        'display_name': "Happiness"
+    },
+
+    {
+        'column_name': "Economy_GDP_Per_Capita",
+        'display_name': "GDP Per Capita"
+    },
+
+    {
+        'column_name': "Family",
+        'display_name': "Family"
+    },
+
+    {
+        'column_name': "Freedom",
+        'display_name': "Freedom"
+    },
+
+    {
+        'column_name': "Generosity",
+        'display_name': "Generosity"
+    },
+
+    {
+        'column_name': "Health_Life_Expectancy",
+        'display_name': "Life Expectancy"
+    },
+
+    {
+        'column_name': "Trust_Government_Corruption",
+        'display_name': "Trust in Government"
     }
 ];
 
