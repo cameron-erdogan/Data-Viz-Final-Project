@@ -48,6 +48,8 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     initViz3Plot(VIZ3_INIT_COUNTRY);
     initViz4Plot(VIZ4_INIT_COUNTRY1, VIZ4_INIT_COUNTRY2);
+    initSwarmPlot();
+    initScatterPlot();
 });
 
 // viz3 interaction event handlers
@@ -65,4 +67,14 @@ d3.select('#viz4-country1-select')
 d3.select('#viz4-country2-select')
     .on("change", function() {
         handleViz4Country2Change();
+    });
+
+d3.select('#scatter-x-dim')
+    .on("change", function() {
+        handleDimensionChange();
+    });
+
+d3.select('#scatter-y-dim')
+    .on("change", function() {
+        handleDimensionChange();
     });

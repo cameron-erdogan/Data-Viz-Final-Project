@@ -29,11 +29,10 @@
             fill: none;
             pointer-events: all;
         }
-        
-        #swarm-plot {
+        /* #swarm-plot {
             border-style: solid;
             border-width: thin;
-        }
+        } */
     </style>
 </head>
 
@@ -49,9 +48,35 @@
         <option value="Trust_Government_Corruption">Trust in Government</option>    
     </select>
     <div id="swarm-plot">
+    </div>
+    <hr>
+    <br>
+    <br> X:
+    <select id="scatter-x-dim">
+      <option value="Happiness_Score" selected="selected">Happiness</option>
+      <option value="Family">Family</option>
+      <option value="Economy_GDP_Per_Capita">GDP/Capita</option>
+      <option value="Freedom">Freedom</option>
+      <option value="Generosity">Generosity</option>
+      <option value="Health_Life_Expectancy">Life Expectancy</option>
+      <option value="Trust_Government_Corruption">Gov. Corruption</option>
+    </select> Y:
+    <select id="scatter-y-dim">
+      <option value="Happiness_Score">Happiness</option>
+      <option value="Family">Family</option>
+      <option value="Economy_GDP_Per_Capita">GDP/Capita</option>
+      <option value="Freedom" selected="selected">Freedom</option>
+      <option value="Generosity">Generosity</option>
+      <option value="Health_Life_Expectancy">Life Expectancy</option>
+      <option value="Trust_Government_Corruption">Gov. Corruption</option>
+    </select>
+
+    <div id="scatter-plot">
 
     </div>
-
+    <hr>
+    <br>
+    <br>
     <span style="color: blue;">Blue:</span>
     <select id="viz3-country-select">
       <option value="China" selected="selected">China</option>
@@ -65,9 +90,7 @@
       <option value="Thailand">Thailand</option>
       
     </select>
-
     <div id="viz3-plot">
-
     </div>
 
     <hr>
@@ -106,6 +129,7 @@
 
     <script type="application/javascript" src="js/constants_and_declarations.js"></script>
     <script type="application/javascript" src="js/swarm.js"></script>
+    <script type="application/javascript" src="js/scatter.js"></script>
     <script type="application/javascript" src="js/country_rankings.js"></script>
     <script type="application/javascript" src="js/country_rankings_comparison.js"></script>
     <script type="application/javascript" src="js/load_data.js"></script>
