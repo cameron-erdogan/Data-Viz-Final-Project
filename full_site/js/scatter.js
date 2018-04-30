@@ -1,9 +1,15 @@
 const SCATTER_CANVAS_HEIGHT = 700;
 const SCATTER_CANVAS_WIDTH = 700;
-const PADDING = 80;
+const VIZ2_LEFT_PADDING = 80;
+const VIZ2_RIGHT_PADDING = 80;
+const VIZ2_TOP_PADDING = 80;
+const VIZ2_BOTTOM_PADDING = 80;
+const VIZ2_GRID_COUNT = 8;
 const RADIUS = 10;
+const VIZ2_AXIS_COLOR = "black";
+const VIZ2_GRIDLINE_COLOR = "gray";
+const VIZ2_GRIDLINE_OFFSET = 0;
 
-// var countryInfo,
 var scatter_svg,
     x_dimension,
     y_dimension,
@@ -53,7 +59,7 @@ function initScatterPlot() {
     var xmin = d3.min(countryInfo, xVal);
     var xScale = d3.scaleLinear()
         .domain([xmin, xmax])
-        .range([PADDING, SCATTER_CANVAS_WIDTH - PADDING]);
+        .range([VIZ2_LEFT_PADDING, SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING]);
     x_scale = xScale;
     var xMap = function(d) { return xScale(xValue(d)); }
     var xAxis = d3.axisBottom(xScale);
@@ -63,13 +69,15 @@ function initScatterPlot() {
     var ymin = d3.min(countryInfo, yVal);
     var yScale = d3.scaleLinear()
         .domain([ymin, ymax])
-        .range([SCATTER_CANVAS_HEIGHT - PADDING, PADDING]);
+        .range([SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING, VIZ2_TOP_PADDING]);
     y_scale = yScale;
     var yMap = function(d) { return yScale(yValue(d)); }
     var yAxis = d3.axisLeft(yScale);
 
     // force simulation
     forceSimulation();
+
+    renderScaleAndLabel(xAxis, yAxis);
 
     var circ = scatter_svg.selectAll("circle")
         .data(countryInfo)
@@ -82,7 +90,6 @@ function initScatterPlot() {
         .append("svg:title")
         .text((d, i) => { return d.Country; });
 
-    renderScaleAndLabel(xAxis, yAxis);
 }
 
 function forceSimulation() {
@@ -95,34 +102,49 @@ function forceSimulation() {
 }
 
 function renderScaleAndLabel(xAxis, yAxis) {
-    // x axis
-    scatter_svg.append("g")
-        .attr("id", "x-axis")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (SCATTER_CANVAS_HEIGHT - PADDING) + ")")
-        .call(xAxis);
+    var block_width = (SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING - VIZ2_LEFT_PADDING) / VIZ2_GRID_COUNT;
+    var block_height = (SCATTER_CANVAS_HEIGHT - VIZ2_TOP_PADDING - VIZ2_BOTTOM_PADDING) / VIZ2_GRID_COUNT;
 
-    scatter_svg.append("text")
-        .attr("id", "x-axis-label")
-        .attr("text-anchor", "end")
-        .attr("x", SCATTER_CANVAS_WIDTH)
-        .attr("y", SCATTER_CANVAS_HEIGHT - 6)
-        .text(x_dimension);
+    // grid lines
+    for (var i = 0; i < VIZ2_GRID_COUNT; i++) {
+        console.log(i)
+        scatter_svg.append("line")
+            .attr("class", "gridline")
+            .attr("x1", VIZ2_LEFT_PADDING)
+            .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i*block_height)
+            .attr("x2", SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING - VIZ2_GRIDLINE_OFFSET)
+            .attr("y2", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i*block_height);
+
+        scatter_svg.append("line")
+            .attr("class", "gridline")
+            .attr("x1", VIZ2_LEFT_PADDING + i*block_width)
+            .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING)
+            .attr("x2", VIZ2_LEFT_PADDING + i*block_width)
+            .attr("y2", VIZ2_TOP_PADDING - VIZ2_GRIDLINE_OFFSET);
+    }
+
+    // x axis
+    scatter_svg.append("line")
+        .attr("class", "axis")
+        .attr("id", "x-axis")
+        .attr("x1", VIZ2_LEFT_PADDING)
+        .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING)
+        .attr("x2", SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING)
+        .attr("y2", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING)
+        .attr("stroke-width", GRAPH_LINE_WIDTH)
+        .attr("stroke", VIZ2_AXIS_COLOR);
 
     // y axis
-    scatter_svg.append("g")
+    scatter_svg.append("line")
         .attr("class", "axis")
         .attr("id", "y-axis")
-        .attr("transform", "translate(" + PADDING + ", 0)")
-        .call(yAxis);
+        .attr("x1", VIZ2_LEFT_PADDING)
+        .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING)
+        .attr("x2", VIZ2_LEFT_PADDING)
+        .attr("y2", VIZ2_TOP_PADDING)
+        .attr("stroke-width", GRAPH_LINE_WIDTH)
+        .attr("stroke", VIZ2_AXIS_COLOR);
 
-    scatter_svg.append("text")
-        .attr("id", "y-axis-label")
-        .attr("text-anchor", "start")
-        .attr("y", 6)
-        .attr("dy", ".75em")
-        .attr("transform", "translate(" + PADDING + ", 10)")
-        .text(y_dimension);
 }
 
 function clearScaleAndLabel() {
@@ -139,7 +161,7 @@ function updateScatterPlot() {
     var xmin = d3.min(countryInfo, xVal);
     var xScale = d3.scaleLinear()
         .domain([xmin, xmax])
-        .range([PADDING, SCATTER_CANVAS_WIDTH - PADDING]);
+        .range([VIZ2_LEFT_PADDING, SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING]);
     x_scale = xScale;
     var xMap = function(d) { return xScale(xValue(d)); }
     var xAxis = d3.axisBottom(x_scale);
@@ -149,7 +171,7 @@ function updateScatterPlot() {
     var ymin = d3.min(countryInfo, yVal);
     var yScale = d3.scaleLinear()
         .domain([ymin, ymax])
-        .range([SCATTER_CANVAS_HEIGHT - PADDING, PADDING]);
+        .range([SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING, VIZ2_TOP_PADDING]);
     y_scale = yScale;
     var yMap = function(d) { return yScale(yValue(d)); }
     var yAxis = d3.axisLeft(y_scale);
@@ -164,8 +186,8 @@ function updateScatterPlot() {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y);
 
-    clearScaleAndLabel();
-    renderScaleAndLabel(xAxis, yAxis);
+    // clearScaleAndLabel();
+    // renderScaleAndLabel(xAxis, yAxis);
 }
 
 function handleDimensionChange() {
