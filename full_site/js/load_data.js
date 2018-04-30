@@ -12,6 +12,16 @@ viz4_svg = d3.select("#viz4-plot")
     .attr("height", CANVAS_HEIGHT)
     .attr("width", CANVAS_WIDTH);
 
+swarmSVG = d3.select("#swarm-plot")
+    .append("svg")
+    .attr("height", CANVAS_HEIGHT)
+    .attr("width", CANVAS_WIDTH);
+
+scatter_svg = d3.select("#scatter-plot")
+    .append("svg")
+    .attr("height", SCATTER_CANVAS_HEIGHT)
+    .attr("width", SCATTER_CANVAS_WIDTH);
+
 d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 
     happinessData.forEach(function(d) {

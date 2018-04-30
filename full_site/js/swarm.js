@@ -153,10 +153,7 @@ function handleSwarmParameterChange() {
     updateSwarmPlot(swarmParameter);
 }
 
-swarmSVG = d3.select("#swarm-plot")
-    .append("svg")
-    .attr("height", CANVAS_HEIGHT)
-    .attr("width", CANVAS_WIDTH);
+
 
 
 /*****************************************************************************

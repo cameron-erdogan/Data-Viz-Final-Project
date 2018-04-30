@@ -199,8 +199,3 @@ function handleDimensionChange() {
 
     updateScatterPlot();
 }
-
-scatter_svg = d3.select("#scatter-plot")
-    .append("svg")
-    .attr("height", SCATTER_CANVAS_HEIGHT)
-    .attr("width", SCATTER_CANVAS_WIDTH);
