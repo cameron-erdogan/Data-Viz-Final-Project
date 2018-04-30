@@ -14,10 +14,8 @@ function initSwarmPlot() {
     var parameter = DIMENSIONS_SCORE[0].column_name;
 
     var margin = { top: 40, right: 40, bottom: 40, left: 40 },
-        width = swarmSVG
-        .attr("width") - margin.left - margin.right,
-        height = swarmSVG
-        .attr("height") - margin.top - margin.bottom;
+        width = swarmSVG.attr("width") - margin.left - margin.right,
+        height = swarmSVG.attr("height") - margin.top - margin.bottom;
 
     var formatValue = d3.format(".3f");
 
@@ -51,7 +49,9 @@ function initSwarmPlot() {
     g.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).ticks(10, ".1f"));
+        .call(d3.axisTop(x)
+            .ticks(10, ".1f")
+            .tickSize(height));
 
     var cell = g.append("g")
         .attr("class", "cells")
@@ -130,7 +130,9 @@ function updateSwarmPlot(parameter) {
     g.select(".axis--x")
         .transition()
         .duration(TRANSITION_DURATION)
-        .call(d3.axisBottom(x).ticks(10, ".1f"));
+        .call(d3.axisTop(x)
+            .ticks(10, ".1f")
+            .tickSize(height));
 
     cell.select("circle")
         .transition()
