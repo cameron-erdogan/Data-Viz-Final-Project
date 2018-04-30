@@ -1,5 +1,5 @@
-var countryInfo,
-    swarmSVG,
+// var countryInfo,
+var swarmSVG,
     scaleArea;
 
 function areaToRadius(area) {
