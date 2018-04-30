@@ -36,7 +36,7 @@ const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 // INTERACTION SETTINGS
 const TRANSITION_DURATION = 1000;
 
-const DIMENSIONS = [{
+const DIMENSIONS_RANK = [{
         'column_name': "Happiness_Score",
         'display_name': "Happiness"
     },
@@ -109,7 +109,7 @@ function initSwarmPlot() {
     //start with all of the country info
     //everywhere it says happiness_score in the bottom can be replaced by something else
     var data = countryInfo;
-    var parameter = DIMENSIONS[0].column_name;
+    var parameter = DIMENSIONS_RANK[0].column_name;
 
     var margin = { top: 40, right: 40, bottom: 40, left: 40 },
         width = swarmSVG
