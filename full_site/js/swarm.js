@@ -7,25 +7,6 @@ function areaToRadius(area) {
     return radius;
 }
 
-function continentToColor(continent) {
-    switch (continent) {
-        case "Asia":
-            return "F8E21C";
-        case "Africa":
-            return "DB5082";
-        case "South America":
-            return "000000";
-        case "North America":
-            return "bbbbbb";
-        case "Europe":
-            return "C1C2FF";
-        case "Oceania":
-            return "9A3CFF";
-        default:
-            return "red";
-    }
-}
-
 function initSwarmPlot() {
     //start with all of the country info
     //everywhere it says happiness_score in the bottom can be replaced by something else
@@ -175,29 +156,6 @@ swarmSVG = d3.select("#swarm-plot")
     .attr("height", CANVAS_HEIGHT)
     .attr("width", CANVAS_WIDTH);
 
-// d3.csv("data/All-The-Data.csv").then(function(happinessData) {
-
-//     happinessData.forEach(function(d) {
-
-//         d.Dystopia_Residual = +d.Dystopia_Residual;
-//         d.Economy_GDP_Per_Capita = +d.Economy_GDP_Per_Capita;
-//         d.Family = +d.Family;
-//         d.Freedom = +d.Freedom;
-//         d.Generosity = +d.Generosity;
-//         d.Happiness_Rank = +d.Happiness_Rank;
-//         d.Happiness_Score = +d.Happiness_Score;
-//         d.Health_Life_Expectancy = +d.Health_Life_Expectancy;
-//         d.Trust_Government_Corruption = +d.Trust_Government_Corruption;
-//         d.Whisker_High = +d.Whisker_High;
-//         d.Whisker_Low = +d.Whisker_Low;
-//         d.Population = +d.Population;
-//     });
-
-//     countryInfo = happinessData;
-
-//     initSwarmPlot();
-//     console.log(countryInfo);
-// });
 
 /*****************************************************************************
  * Event Handlers

@@ -19,25 +19,6 @@ function yVal(d) {
     return y_dimension ? d[y_dimension] : 0;
 }
 
-// function continentToColor(continent) {
-//     switch (continent) {
-//         case "Asia":
-//             return "F8E21C";
-//         case "Africa":
-//             return "DB5082";
-//         case "South America":
-//             return "000000";
-//         case "North America":
-//             return "bbbbbb";
-//         case "Europe":
-//             return "C1C2FF";
-//         case "Oceania":
-//             return "9A3CFF";
-//         default:
-//             return "red";
-//     }
-// }
-
 function handleMouseOver(d, i) {
     scatter_svg.append("text")
         .attr('id', "label-" + d.Happiness_Rank)
@@ -196,40 +177,6 @@ function handleDimensionChange() {
 
     updateScatterPlot();
 }
-
-// d3.csv("data/All-The-Data.csv").then(function(happinessData) {
-
-//     happinessData.forEach(function(d) {
-
-//         d.Dystopia_Residual = +d.Dystopia_Residual;
-//         d.Economy_GDP_Per_Capita = +d.Economy_GDP_Per_Capita;
-//         d.Family = +d.Family;
-//         d.Freedom = +d.Freedom;
-//         d.Generosity = +d.Generosity;
-//         d.Happiness_Rank = +d.Happiness_Rank;
-//         d.Happiness_Score = +d.Happiness_Score;
-//         d.Health_Life_Expectancy = +d.Health_Life_Expectancy;
-//         d.Trust_Government_Corruption = +d.Trust_Government_Corruption;
-//         d.Whisker_High = +d.Whisker_High;
-//         d.Whisker_Low = +d.Whisker_Low;
-//         d.Population = +d.Population;
-//     });
-
-//     countryInfo = happinessData;
-
-//     initScatterPlot();
-// });
-
-
-// d3.select('#scatter-x-dim')
-//     .on("change", function() {
-//         handleDimensionChange();
-//     });
-
-// d3.select('#scatter-y-dim')
-//     .on("change", function() {
-//         handleDimensionChange();
-//     });
 
 scatter_svg = d3.select("#scatter-plot")
     .append("svg")

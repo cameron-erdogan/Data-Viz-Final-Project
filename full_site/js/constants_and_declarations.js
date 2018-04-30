@@ -120,3 +120,22 @@ var viz3_ranking_data = [1, 1, 1, 1, 1, 1, 1];
 var viz4_country1_ranking_data = [1, 1, 1, 1, 1, 1, 1];
 var viz4_country2_ranking_data = [1, 1, 1, 1, 1, 1, 1];
 var axis_coords = [0, 0, 0, 0, 0, 0, 0];
+
+function continentToColor(continent) {
+    switch (continent) {
+        case "Asia":
+            return "F8E21C";
+        case "Africa":
+            return "DB5082";
+        case "South America":
+            return "000000";
+        case "North America":
+            return "bbbbbb";
+        case "Europe":
+            return "C1C2FF";
+        case "Oceania":
+            return "9A3CFF";
+        default:
+            return "red";
+    }
+}
