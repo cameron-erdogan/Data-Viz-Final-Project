@@ -208,3 +208,7 @@ h5 {
     display: inline-flex;
 }
 
+.in-viz-label {
+  font-size: 16px;
+  font-family: Helvetica Neue, sans-serif;
+}

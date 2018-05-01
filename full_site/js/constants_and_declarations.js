@@ -7,8 +7,8 @@ const NUMERAL_LABEL_GUTTER = 40;
 const DIMENSION_LABEL_Y_OFFSET = 0;
 
 const LEFT_PADDING = 250;
-const RIGHT_PADDING = 30;
-const TOP_PADDING = 100;
+const RIGHT_PADDING = 50;
+const TOP_PADDING = 50;
 const BOTTOM_PADDING = 15;
 
 // MARKER SETTINGS
@@ -16,9 +16,9 @@ const CIRCLE_RADIUS = 10;
 const SQ_SIDE_LENGTH = 20;
 const SQ_CORNER_RADIUS = 2;
 const CIRCLE_OPACITY = 1; // [0.0 - 1.0]
-const VIZ3_ACCENT_COLOR = "blue";
-const VIZ4_C1_ACCENT_COLOR = "green";
-const VIZ4_C2_ACCENT_COLOR = "red";
+const VIZ3_ACCENT_COLOR = "#FF8300";
+const VIZ4_C1_ACCENT_COLOR = "#FF8300";
+const VIZ4_C2_ACCENT_COLOR = "#572BD6";
 
 // DATA SETTINGS
 const COUNTRIES_COUNT = 155;
@@ -35,6 +35,7 @@ const RANKING_GRIDLINES = [1, 30, 60, 90, 120, 150];
 
 // INTERACTION SETTINGS
 const TRANSITION_DURATION = 1000;
+const IN_VIZ_LABEL_COLOR = "#9b9b9b";
 
 const DIMENSIONS_RANK = [{
         'column_name': "Happiness_Rank",
@@ -113,7 +114,9 @@ var countryInfo,
     viz3_svg,
     viz4_svg,
     xScale,
-    yScale;
+    yScale,
+    viz3_xScale,
+    viz3_yScale;
 
 
 var viz3_ranking_data = [1, 1, 1, 1, 1, 1, 1];

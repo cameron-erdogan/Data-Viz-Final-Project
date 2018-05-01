@@ -51,10 +51,10 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
     countryInfoMap = d3.map(countryInfo, (d) => d.Country);
     xScale = d3.scaleLinear()
         .domain([1, COUNTRIES_COUNT])
-        .range([LEFT_PADDING, CANVAS_WIDTH - LEFT_PADDING - RIGHT_PADDING]);
+        .range([LEFT_PADDING, CANVAS_WIDTH - RIGHT_PADDING]);
     yScale = d3.scaleLinear()
         .domain([0, DIMENSIONS_RANK.length])
-        .range([TOP_PADDING + NUMERAL_LABEL_GUTTER, CANVAS_HEIGHT - BOTTOM_PADDING]);
+        .range([TOP_PADDING + NUMERAL_LABEL_GUTTER + 15, CANVAS_HEIGHT - BOTTOM_PADDING - 15]);
 
     initViz3Plot(VIZ3_INIT_COUNTRY);
     initViz4Plot(VIZ4_INIT_COUNTRY1, VIZ4_INIT_COUNTRY2);

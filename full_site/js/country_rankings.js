@@ -20,19 +20,21 @@ function initViz3Plot(country) {
             .attr("class", "gridline")
             .attr('d', pathString);
         viz3_svg.append("text")
-            .attr("class", "ranking-gridline-label")
+            .attr("class", "ranking-gridline-label in-viz-label")
             .attr("text-anchor", "middle")
             .attr("x", xCoord)
-            .attr("y", TOP_PADDING - 25)
+            .attr("y", TOP_PADDING)
+            .style("fill", IN_VIZ_LABEL_COLOR)
             .text(RANKING_GRIDLINES[l]);
     }
 
     // Render dimension labels
     viz3_svg.append("text")
-        .attr("class", "dimension-label")
+        .attr("class", "dimension-label in-viz-label")
         .attr("text-anchor", "end")
         .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
-        .attr("y", TOP_PADDING - 25)
+        .attr("y", TOP_PADDING)
+        .style("fill", IN_VIZ_LABEL_COLOR)
         .text("Rank");
 
     for (d = 0; d < DIMENSIONS_RANK.length; d++) {
@@ -40,10 +42,11 @@ function initViz3Plot(country) {
         axis_coords[d] = yCoord;
         viz3_ranking_data[d] = countryInfoMap.get(country)[DIMENSIONS_RANK[d].column_name];
         viz3_svg.append("text")
-            .attr("class", "dimension-label")
+            .attr("class", "dimension-label in-viz-label")
             .attr("text-anchor", "end")
             .attr("x", LEFT_PADDING - TEXT_LABEL_GUTTER)
             .attr("y", yCoord - DIMENSION_LABEL_Y_OFFSET)
+            .style("fill", IN_VIZ_LABEL_COLOR)
             .text(DIMENSIONS_RANK[d].display_name);
     }
 
