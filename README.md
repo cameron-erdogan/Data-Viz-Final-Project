@@ -11,7 +11,7 @@ Data:
 The data is compiled located in full_site/data/All-The-Data.csv. This is a consolidated file of primarily World Happiness Report data, but also of country population and continent. 
 
 Website Link:
-https://cameron-erdogan.github.io/Data-Viz-Final-Project/full_site/
+https://cameron-erdogan.github.io/Data-Viz-Final-Project/
 
 Screencast Link:
 https://www.youtube.com/watch?v=P4y-Q6-GP38&feature=youtu.be
