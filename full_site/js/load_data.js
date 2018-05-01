@@ -2,6 +2,26 @@
  *  Set up
  */
 
+// regester dropdown select countrols
+$(document).ready(function() {
+    $('#swarm-parameter-select').select2({
+    minimumResultsForSearch: -1
+    });
+
+    $('#scatter-x-dim').select2({
+    minimumResultsForSearch: -1
+    });
+
+    $('#scatter-y-dim').select2({
+    minimumResultsForSearch: -1
+    });
+
+    $('#viz3-country-select').select2();
+    $('#viz4-country1-select').select2();
+    $('#viz4-country2-select').select2();
+
+});
+
 viz3_svg = d3.select("#viz3-plot")
     .append("svg")
     .attr("height", CANVAS_HEIGHT)

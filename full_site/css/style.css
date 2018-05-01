@@ -248,3 +248,8 @@ h5 {
 .viz3-secondary-color {
     background-color: #572BD6;
 }
+
+.select2.select2-container {
+    font-size: 16px;
+    font-family: Helvetica Neue, sans-serif;
+}
