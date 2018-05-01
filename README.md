@@ -2,7 +2,7 @@
 
 Code: 
 
-Everything in the full_site folder is code. 
+Everything is in the full_site folder.
 
 For external code, we use the d3 library (for all the visualizations) and the select2 (for our dropdown menu stylings). Both of these are referenced in index.html and are loaded from a url. 
 
