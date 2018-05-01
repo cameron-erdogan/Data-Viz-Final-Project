@@ -56,7 +56,7 @@ function initSwarmPlot() {
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisTop(x)
-            .ticks(10, ".1f")
+            .ticks(10, ".2f")
             .tickSize(height));
 
     var cell = g.append("g")
@@ -137,7 +137,7 @@ function updateSwarmPlot(parameter) {
         .transition()
         .duration(TRANSITION_DURATION)
         .call(d3.axisTop(x)
-            .ticks(10, ".1f")
+            .ticks(10, ".2f")
             .tickSize(height));
 
     cell.select("circle")
