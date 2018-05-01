@@ -45,7 +45,7 @@ function computeCircleRadius(population) {
 
 function initScatterPlot() {
     area_scale = d3.scaleLinear()
-        .range([40, 2000])
+        .range([20, 1000])
         .domain(d3.extent(countryInfo, function(d) { return d.Population; }));
 
     var xElem = document.getElementById("scatter-x-dim");
@@ -111,15 +111,15 @@ function renderScaleAndLabel(xAxis, yAxis) {
         scatter_svg.append("line")
             .attr("class", "gridline")
             .attr("x1", VIZ2_LEFT_PADDING)
-            .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i*block_height)
+            .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i * block_height)
             .attr("x2", SCATTER_CANVAS_WIDTH - VIZ2_RIGHT_PADDING - VIZ2_GRIDLINE_OFFSET)
-            .attr("y2", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i*block_height);
+            .attr("y2", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING - i * block_height);
 
         scatter_svg.append("line")
             .attr("class", "gridline")
-            .attr("x1", VIZ2_LEFT_PADDING + i*block_width)
+            .attr("x1", VIZ2_LEFT_PADDING + i * block_width)
             .attr("y1", SCATTER_CANVAS_HEIGHT - VIZ2_BOTTOM_PADDING)
-            .attr("x2", VIZ2_LEFT_PADDING + i*block_width)
+            .attr("x2", VIZ2_LEFT_PADDING + i * block_width)
             .attr("y2", VIZ2_TOP_PADDING - VIZ2_GRIDLINE_OFFSET);
     }
 

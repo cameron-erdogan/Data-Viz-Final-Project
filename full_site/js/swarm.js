@@ -29,9 +29,15 @@ function initSwarmPlot() {
 
     x.domain(d3.extent(data, function(d) { return d[parameter]; }));
 
+
+
     scaleArea = d3.scaleLinear()
         .range([20, 1000])
         .domain(d3.extent(data, function(d) { return d.Population; }));
+
+    console.log(areaToRadius(scaleArea(1000000)));
+    console.log(areaToRadius(scaleArea(50000000)));
+    console.log(areaToRadius(scaleArea(100000000)));
 
     var simulation = d3.forceSimulation(data)
         .force("x", d3.forceX(function(d) { return x(d[parameter]); }).strength(1))
