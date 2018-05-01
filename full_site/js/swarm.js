@@ -153,10 +153,8 @@ function updateSwarmPlot(parameter) {
         .text(function(d) { return d.data.Country + "\n" + d.data.Continent + "\n" + formatValue(d.data[parameter]); });
 }
 
-function handleSwarmParameterChange() {
-    var swarmSelectElem = document.getElementById("swarm-parameter-select");
-    var swarmParameter = swarmSelectElem.options[swarmSelectElem.selectedIndex].value;
-    updateSwarmPlot(swarmParameter);
+function handleSwarmParameterChange(param) {
+    updateSwarmPlot(param);
 }
 
 
@@ -165,7 +163,8 @@ function handleSwarmParameterChange() {
 /*****************************************************************************
  * Event Handlers
  */
-var swarmSelect = d3.select('#swarm-parameter-select')
-    .on("change", function() {
-        handleSwarmParameterChange();
-    });
+
+$('#swarm-parameter-select').on('select2:select', function (e) {
+    var param = e.params.data.id;
+    handleSwarmParameterChange(param);
+});

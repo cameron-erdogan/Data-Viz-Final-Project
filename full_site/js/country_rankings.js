@@ -161,8 +161,6 @@ function handleViz3MouseOut(d, i) {
     d3.select("#viz3-label-" + d.Happiness_Rank).remove();
 }
 
-function handleViz3CountryChange() {
-    var viz3SelectElem = document.getElementById("viz3-country-select");
-    var viz3Country = viz3SelectElem.options[viz3SelectElem.selectedIndex].value;
-    updateViz3Plot(viz3Country);
+function handleViz3CountryChange(country) {
+    updateViz3Plot(country);
 }

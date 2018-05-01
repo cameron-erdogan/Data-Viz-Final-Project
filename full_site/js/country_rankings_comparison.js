@@ -179,17 +179,10 @@ function updateViz4Plot(c1, c2) {
     }
 }
 
-function handleViz4Country1Change() {
-    var viz4C1SelectElem = document.getElementById("viz4-country1-select");
-    var viz4Country1 = viz4C1SelectElem.options[viz4C1SelectElem.selectedIndex].value;
-    updateViz4Plot(viz4Country1, null);
+function handleViz4CountryChange(c1, c2) {
+    updateViz4Plot(c1, c2);
 }
 
-function handleViz4Country2Change() {
-    var viz4C2SelectElem = document.getElementById("viz4-country2-select");
-    var viz4Country2 = viz4C2SelectElem.options[viz4C2SelectElem.selectedIndex].value;
-    updateViz4Plot(null, viz4Country2);
-}
 
 function handleViz4CircleMouseOver(d, i) {
     viz4_svg.append("text")

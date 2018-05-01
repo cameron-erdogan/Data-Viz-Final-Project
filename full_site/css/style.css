@@ -109,7 +109,7 @@ h1 {
   font-size: 12px;
 }*/
 
-.select {
+/*.select {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -125,7 +125,6 @@ h1 {
     display: flex;
     align-items: center;
     background: #ffffff;
-    /*  border-top:#222 solid 1px;*/
     position: absolute;
     top: 0;
     width: 100%;
@@ -185,7 +184,7 @@ input:checked+label:before {
     width: 40px;
     content: '';
     background: #e7e7e7;
-}
+}*/
 
 
 /*                  Key                           */

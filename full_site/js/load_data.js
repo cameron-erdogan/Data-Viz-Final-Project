@@ -75,28 +75,29 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
 });
 
 // viz3 interaction event handlers
-d3.select('#viz3-country-select')
-    .on("change", function() {
-        handleViz3CountryChange();
-    });
+$('#viz3-country-select').on('select2:select', function (e) {
+    var country = e.params.data.id;
+    handleViz3CountryChange(country);
+});
 
 // viz4 interaction event handlers
-d3.select('#viz4-country1-select')
-    .on("change", function() {
-        handleViz4Country1Change();
-    });
+$('#viz4-country1-select').on('select2:select', function (e) {
+    var c1 = e.params.data.id;
+    handleViz4CountryChange(c1, null);
+});
 
-d3.select('#viz4-country2-select')
-    .on("change", function() {
-        handleViz4Country2Change();
-    });
+$('#viz4-country2-select').on('select2:select', function (e) {
+    var c2 = e.params.data.id;
+    handleViz4CountryChange(null, c2);
+});
 
-d3.select('#scatter-x-dim')
-    .on("change", function() {
-        handleDimensionChange();
-    });
 
-d3.select('#scatter-y-dim')
-    .on("change", function() {
-        handleDimensionChange();
-    });
+$('#scatter-x-dim').on('select2:select', function (e) {
+    var param = e.params.data.id;
+    handleDimensionChange(param, null);
+});
+
+$('#scatter-y-dim').on('select2:select', function (e) {
+    var param = e.params.data.id;
+    handleDimensionChange(null, param);
+});

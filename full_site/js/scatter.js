@@ -189,12 +189,14 @@ function updateScatterPlot() {
     // renderScaleAndLabel(xAxis, yAxis);
 }
 
-function handleDimensionChange() {
-    var xElem = document.getElementById("scatter-x-dim");
-    x_dimension = xElem.options[xElem.selectedIndex].value;
+function handleDimensionChange(xDim, yDim) {
+    if (xDim) {
+        x_dimension = xDim;
+    }
 
-    var yElem = document.getElementById("scatter-y-dim");
-    y_dimension = yElem.options[yElem.selectedIndex].value;
+    if (yDim) {
+        y_dimension = yDim;
+    }
 
     updateScatterPlot();
 }
