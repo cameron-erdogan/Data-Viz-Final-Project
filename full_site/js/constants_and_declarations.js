@@ -22,9 +22,9 @@ const VIZ4_C2_ACCENT_COLOR = "#572BD6";
 
 // DATA SETTINGS
 const COUNTRIES_COUNT = 155;
-const VIZ3_INIT_COUNTRY = "China";
-const VIZ4_INIT_COUNTRY1 = "China";
-const VIZ4_INIT_COUNTRY2 = "Australia";
+const VIZ3_INIT_COUNTRY = "United States";
+const VIZ4_INIT_COUNTRY1 = "United States";
+const VIZ4_INIT_COUNTRY2 = "Japan";
 
 
 // LINE SETTINGS

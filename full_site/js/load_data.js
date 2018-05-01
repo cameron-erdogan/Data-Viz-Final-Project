@@ -49,6 +49,18 @@ d3.csv("data/All-The-Data.csv").then(function(happinessData) {
     countryInfo = happinessData;
 
     countryInfoMap = d3.map(countryInfo, (d) => d.Country);
+
+    // to generate dropdown html for all countries
+
+    // var countrys= countryInfoMap.keys().sort();
+    // var thing = ""
+    // for (var c = 0; c<countrys.length; c++) {
+    //     line = '<option value="' + countrys[c] + '">' + countrys[c] + '</option>'
+    //     thing = thing + line;
+    // }
+    // console.log(thing);
+
+
     xScale = d3.scaleLinear()
         .domain([1, COUNTRIES_COUNT])
         .range([LEFT_PADDING, CANVAS_WIDTH - RIGHT_PADDING]);
