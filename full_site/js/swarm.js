@@ -13,7 +13,7 @@ function initSwarmPlot() {
     var data = countryInfo;
     var parameter = DIMENSIONS_SCORE[0].column_name;
 
-    var margin = { top: 40, right: 40, bottom: 40, left: 40 },
+    var margin = { top: 40, right: 40, bottom: 40, left: 10 },
         width = swarmSVG.attr("width") - margin.left - margin.right,
         height = swarmSVG.attr("height") - margin.top - margin.bottom;
 
@@ -94,7 +94,7 @@ function updateSwarmPlot(parameter) {
     console.log(parameter);
     var data = countryInfo;
 
-    var margin = { top: 40, right: 40, bottom: 40, left: 40 },
+    var margin = { top: 40, right: 40, bottom: 40, left: 10 },
         width = swarmSVG
         .attr("width") - margin.left - margin.right,
         height = swarmSVG

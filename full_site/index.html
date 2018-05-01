@@ -32,7 +32,9 @@
         } */
         
         .axis text {
-            font: 10px sans-serif;
+            font: 14px Helvetica Neue, sans-serif;
+            /* font-family: Helvetica Neue; */
+            fill: lightgray;
         }
         
         .cells path {
@@ -55,7 +57,7 @@
                 <div class="header-text">
                     <ul>
                         <li><a href="http://worldhappiness.report/ed/2018/">Based on the World Happiness Report<a></li>
-                    <li id="header-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+                    <li id="header-body">The World Happiness Report is a landmark survey of the state of global happiness. The World Happiness Report 2018, ranks 156 countries by their happiness levels, and 117 countries by the happiness of their immigrants.</li>
                 </ul>
             </li>
             </div>
@@ -212,7 +214,7 @@
 
 
         <!-- Place to insert VISUALISATION 2 -->
-        X:
+    <div class="Viz2-axis-labels"> X:</div>
     <select id="scatter-x-dim">
         <option value="Happiness_Score" selected="selected">Happiness</option>
         <option value="Economy_GDP_Per_Capita">GDP Per Capita</option>
@@ -221,7 +223,8 @@
         <option value="Generosity">Generosity</option>
         <option value="Health_Life_Expectancy">Life Expectancy</option>
         <option value="Trust_Government_Corruption">Trust in Government</option>    
-    </select> Y:
+    </select> 
+    <div class="Viz2-axis-labels">Y:</div>
     <select id="scatter-y-dim">
         <option value="Happiness_Score" selected="selected">Happiness</option>
         <option value="Economy_GDP_Per_Capita">GDP Per Capita</option>
