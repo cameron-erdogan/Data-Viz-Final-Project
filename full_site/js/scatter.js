@@ -107,7 +107,6 @@ function renderScaleAndLabel(xAxis, yAxis) {
 
     // grid lines
     for (var i = 0; i < VIZ2_GRID_COUNT; i++) {
-        console.log(i)
         scatter_svg.append("line")
             .attr("class", "gridline")
             .attr("x1", VIZ2_LEFT_PADDING)

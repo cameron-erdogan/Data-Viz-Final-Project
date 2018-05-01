@@ -212,3 +212,18 @@ h5 {
   font-size: 16px;
   font-family: Helvetica Neue, sans-serif;
 }
+
+.dot {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.viz3-primary-color {
+  background-color: #FF8300;
+}
+
+.viz3-secondary-color {
+  background-color: #572BD6;
+}
